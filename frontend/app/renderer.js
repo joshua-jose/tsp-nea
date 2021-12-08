@@ -10,14 +10,14 @@ var canvas = document.getElementsByClassName('view-canvas')[0],
 
 fitToContainer(canvas);
 ctx.fillStyle = 'yellow';
-for (var i = 0; i < 50; ++i) {
-    for (var j = 0; j < 50; ++j)
+for (var i = 0; i < 75; ++i) {
+    for (var j = 0; j < 75; ++j)
         ctx.fillRect(i * 18 + 2, j * 18 + 2, 16, 16);
 }
 
 function fitToContainer(canvas) {
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    //canvas.width = canvas.offsetWidth;
+    //canvas.height = canvas.offsetHeight;
+    canvas.width = 1024;
+    canvas.height = 1024;
 }

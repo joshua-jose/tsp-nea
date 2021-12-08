@@ -1,23 +1,19 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "tsp-nea",
+  "version": "0.1.0",
+  "description": "",
   "main": "./app/main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "repository": "",
+  "author": "",
+  "license": "",
   "devDependencies": {
-    "electron": "^16.0.2",
     "electron-reloader": "^1.2.1"
+  },
+  "dependencies": {
+    "electron": "^16.0.2",
+    "two.js": "^0.7.12"
   }
 }
