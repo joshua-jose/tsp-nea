@@ -1,23 +1,49 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// No Node.js APIs are available in this process because
-// `nodeIntegration` is turned off. Use `preload.js` to
-// selectively enable features needed in the rendering
-// process.
+var viewport = document.getElementsByClassName('viewport')[0];
+var canvas = document.getElementsByClassName('view-canvas')[0]
 
-var canvas = document.getElementsByClassName('view-canvas')[0],
-    ctx = canvas.getContext('2d');
+var two = new Two({
+    autostart: true,
+    fitted: true,
+    domElement: canvas
+}).appendTo(viewport);
 
-fitToContainer(canvas);
-ctx.fillStyle = 'yellow';
-for (var i = 0; i < 75; ++i) {
-    for (var j = 0; j < 75; ++j)
-        ctx.fillRect(i * 18 + 2, j * 18 + 2, 16, 16);
+window.addEventListener("resize", function (event) {
+    canvas.width = viewport.offsetWidth;
+    canvas.height = viewport.offsetHeight;
+    two.renderer.setSize(viewport.offsetWidth, viewport.offsetHeight);
+});
+
+for (var i = 0; i < 25; ++i) {
+    for (var j = 0; j < 25; ++j) {
+        let size = 64;
+        let spacing = 2;
+        let delta = size + spacing;
+        var r = two.makeRectangle(i * delta + spacing + size / 2, j * delta + spacing + size / 2, size, size);
+        r.fill = 'rgb(255, 255, 0)';
+    }
 }
 
-function fitToContainer(canvas) {
-    //canvas.width = canvas.offsetWidth;
-    //canvas.height = canvas.offsetHeight;
-    canvas.width = 1024;
-    canvas.height = 1024;
+var rect = two.makeRectangle(two.width / 2, two.height / 2, 50, 50);
+rect.fill = 'rgb(255, 100, 100)';
+
+two.bind('update', function () {
+    rect.rotation += 0.01;
+});
+
+/*
+//window.addEventListener('resize', updateCanvas);
+//updateCanvas();
+function updateCanvas() {
+    var canvas = document.getElementsByClassName('view-canvas')[0],
+        ctx = canvas.getContext('2d');
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    ctx.fillStyle = 'yellow';
+    for (var i = 0; i < 75; ++i) {
+        for (var j = 0; j < 75; ++j)
+            ctx.fillRect(i * 18 + 2, j * 18 + 2, 16, 16);
+    }
 }
+*/
