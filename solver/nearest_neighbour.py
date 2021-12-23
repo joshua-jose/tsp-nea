@@ -1,30 +1,11 @@
 import numpy as np
-import math
-from numba import jit
-from functools import cache
 
-from get_start import get_start, get_start_index
 from solution import Solution
-
-
-@jit(nopython=True, fastmath=True, cache=True)
-def score_solution(path, nodes):
-    total_distance = 0
-
-    for prev, curr in zip(path, path[1:]):
-        prev_node = nodes[prev]
-        curr_node = nodes[curr]
-
-        dx = prev_node[0] - curr_node[0]
-        dy = prev_node[1] - curr_node[1]
-
-        total_distance += dx**2 + dy**2
-    return total_distance
 
 
 def tsp_nearest_neighbour(problem):
     solution = Solution(problem)
-    start = get_start_index(problem.nodes)
+    start = problem.start_index
 
     path = [start]
 

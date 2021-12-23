@@ -7,17 +7,24 @@ pyplot.ion()
 class GUI:
 
     def __init__(self, problem) -> None:
-        self.figure, self.ax = pyplot.subplots(figsize=(8, 6))
         self.problem = problem
         self.xs = [i[0] for i in problem.nodes]
         self.ys = [i[1] for i in problem.nodes]
 
-        self.ax.plot(self.xs, self.ys, 'o')
-        self.ax.plot(problem.centre[0], problem.centre[1], 'ro')
-        self.ax.plot(problem.start[0], problem.start[1], 'go')
+        self.figure = pyplot.figure(figsize=(12, 6))
+        self.gs = self.figure.add_gridspec(1, 2)
+        self.subplots = []
 
-    def draw_solution(self, solution):
-        line, = self.ax.plot(self.xs, self.ys)
+    def draw_solution(self, solution, name=None):
+
+        ax = self.figure.add_subplot(self.gs[len(self.subplots)], title=name)
+        self.subplots.append(ax)
+
+        ax.plot(self.xs, self.ys, 'o')
+        ax.plot(self.problem.centre[0], self.problem.centre[1], 'ro')
+        ax.plot(self.problem.start[0], self.problem.start[1], 'go')
+
+        line, = ax.plot(self.xs, self.ys)
 
         edgesx = []
         edgesy = []
@@ -31,8 +38,15 @@ class GUI:
         self.figure.canvas.draw()
         self.figure.canvas.flush_events()
 
-    def draw_iterations(self, solution):
-        line, = self.ax.plot(self.xs, self.ys)
+    def draw_iterations(self, solution, name=None):
+        ax = self.figure.add_subplot(self.gs[len(self.subplots)], title=name)
+        self.subplots.append(ax)
+
+        ax.plot(self.xs, self.ys, 'o')
+        ax.plot(self.problem.centre[0], self.problem.centre[1], 'ro')
+        ax.plot(self.problem.start[0], self.problem.start[1], 'go')
+
+        line, = ax.plot(self.xs, self.ys)
 
         for sol in solution.iterations:
             edgesx = []

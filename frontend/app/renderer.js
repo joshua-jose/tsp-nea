@@ -10,6 +10,10 @@ var two = new Two({
 window.addEventListener("resize", resize);
 
 var rect;
+
+draw();
+resize();
+
 function draw() {
     for (var i = 0; i < 25; ++i) {
         for (var j = 0; j < 25; ++j) {
@@ -28,8 +32,6 @@ function draw() {
 two.bind('update', function () {
     rect.rotation += 0.01;
 });
-draw();
-resize();
 
 function resize() {
     var width = viewport.offsetWidth;
@@ -44,9 +46,7 @@ function resize() {
     var ctx = canvas.getContext('2d');
     ctx.scale(1 / scale, 1 / scale);
 
-    two.remove(rect);
-    rect = two.makeRectangle(two.width / 2, two.height / 2, 50, 50);
-    rect.fill = 'rgb(255, 100, 100)';
+    rect.translation.set(two.width / 2, two.height / 2);
 }
 
 /*

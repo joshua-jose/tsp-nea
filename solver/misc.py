@@ -1,14 +1,12 @@
+import pickle
 import numpy as np
-import math
+
 from numba import jit
 from functools import cache
-import pickle
 from os import path
 
-from solution import Solution
-
 basepath = path.dirname(__file__)
-PERM_FOLDER = path.abspath(path.join(basepath, "..", "permutation"))
+PERM_FOLDER = path.abspath(path.join(basepath, "../..", "permutation"))
 
 
 @jit(nopython=True, fastmath=True, cache=True)
@@ -21,7 +19,7 @@ def score_solution(path, nodes):
 
         dx = prev_node[0] - curr_node[0]
         dy = prev_node[1] - curr_node[1]
-        total_distance += dx**2 + dy**2
+        total_distance += dx*dx + dy*dy
     return total_distance
 
 
@@ -29,8 +27,7 @@ def score_solution(path, nodes):
 def permutations(n):
     try:
         with open(f"{n}_perm.pickle", "rb") as f:
-            a = pickle.load(f)
-            return a
+            return pickle.load(f)
     except FileNotFoundError:
         pass
 
@@ -41,8 +38,11 @@ def permutations(n):
         20922789888000, 355687428096000, 6402373705728000,
         121645100408832000, 2432902008176640000], dtype='int64')
 
-    #a = np.zeros((np.math.factorial(n), n), np.uint8)
-    a = np.zeros((FACT_LUT[n], n), np.uint8)
+    if n < len(FACT_LUT)-1:
+        a = np.zeros((FACT_LUT[n], n), np.uint8)
+    else:
+        a = np.zeros((np.math.factorial(n), n), np.uint8)
+
     f = 1
     for m in range(2, n+1):
         b = a[:f, n-m+1:]      # the block of permutations of range(m-1)
@@ -55,33 +55,3 @@ def permutations(n):
     with open(f"{PERM_FOLDER}/{n}_perm.pickle", 'wb') as f:
         pickle.dump(a, f)
     return a
-
-
-def tsp_brute_force(problem):
-    solution = Solution(problem)
-    paths = permutations(problem.size)
-
-    iterations, best_path = find_best_solution(paths, problem.nodes)
-
-    for i in iterations:
-        solution.add_iteration(i)
-    solution.set_path(best_path)
-
-    return solution
-
-
-@jit(nopython=True, fastmath=True)
-def find_best_solution(paths, nodes):
-    n_nodes = len(nodes)
-    best_path = np.empty((n_nodes,), dtype=np.uint8)
-    best_paths = []
-    best_score = math.inf
-
-    for path in paths:
-        score = score_solution(path, nodes)
-        if score < best_score:
-            best_path = path
-            best_score = score
-            best_paths.append(path)
-
-    return best_paths, best_path
