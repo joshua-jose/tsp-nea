@@ -4,7 +4,7 @@ import numpy as np
 class Problem:
     def __init__(self, n) -> None:
         self.size = n
-        self.nodes = np.random.rand(n, 2)
+        self.nodes = np.random.rand(n, 2)  # n random tuples of (x,y)
         self.centre = np.mean(self.nodes, 0)
         self.start = get_start(self.nodes)
         self.start_index = get_start_index(self.nodes)

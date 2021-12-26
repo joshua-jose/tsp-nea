@@ -11,6 +11,7 @@ class Solution:
         self.iterations = []
 
     def set_path(self, path):
+        self.path = np.array(path, dtype=np.uint8)
         self.solution = []
         for i in path:
             self.solution.append(self.problem.nodes[i])
