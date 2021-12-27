@@ -2,60 +2,44 @@ from functools import cache
 import numpy as np
 
 from solution import Solution
+from misc import shortest_path
 
 
 def tsp_held_karp(problem):
+    # TODO: work from a distance matrix rather than assuming 2D nodes
+
     hk_shortest_path.cache_clear()  # dont need solutions from previous run
 
     solution = Solution(problem)
-    #start = tuple(problem.start)
-    start = tuple(problem.nodes[0])
-
-    # TODO: refactor this to work in indexes rather than raw nodes
-    # TODO: work from a distance matrix rather than assuming 2D nodes
+    start = 0
 
     # turn our array of arrays into a set of tuples, where each tuple is a point
     # easy to pop off this set
-    points = frozenset(tuple(point) for point in problem.nodes)
+    nodes = frozenset(range(problem.size))
 
     paths = []
-    for c in points - {start}:
-        paths.append(hk_shortest_path(start, points-{start, c}, c))
+    for c in nodes - {start}:
+        paths.append(hk_shortest_path(problem, start, nodes-{start, c}, c))
 
-    shortest_solution = min(paths, key=segment_length)
-    shortest_path = []
-    for i in shortest_solution:
-        shortest_path.append(np.where(problem.nodes == i))
-        pass
+    best_path = shortest_path(paths, problem.points)
+    solution.set_path(best_path)
 
-    solution.set_path(shortest_path)
     return solution
 
 
 @cache
-def hk_shortest_path(start, cities, end):
+def hk_shortest_path(problem, start, cities, end):
     # The cities set is empty (path between start node and end node)
+
     if not cities:
         return [start, end]
     else:
         paths = []
         for c in cities:
             # shortest path between start and c
-            paths.append(hk_shortest_path(start, cities-{c}, c) + [end])
+            path = hk_shortest_path(problem, start, cities-{c}, c) + [end]
+            paths.append(path)
 
         # Find the path in the list with the shortest length
-        shortest_path = min(paths, key=segment_length)
-
-        return shortest_path
-
-
-def segment_length(segment):
-    "The total of distances between each pair of consecutive cities in the segment."
-
-    length = 0
-    for i in range(len(segment)):
-        dx = segment[i][0] - segment[i-1][0]
-        dy = segment[i][1] - segment[i-1][1]
-        length += dx*dx + dy*dy
-
-    return length
+        best_path = shortest_path(paths, problem.points)
+        return best_path

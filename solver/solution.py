@@ -14,10 +14,10 @@ class Solution:
         self.path = np.array(path, dtype=np.uint8)
         self.solution = []
         for i in path:
-            self.solution.append(self.problem.nodes[i])
+            self.solution.append(self.problem.points[i])
 
     def add_iteration(self, path):
         solution = []
         for i in path:
-            solution.append(self.problem.nodes[i])
+            solution.append(self.problem.points[i])
         self.iterations.append(solution)

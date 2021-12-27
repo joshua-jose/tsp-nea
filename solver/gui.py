@@ -8,8 +8,8 @@ class GUI:
 
     def __init__(self, problem) -> None:
         self.problem = problem
-        self.xs = [i[0] for i in problem.nodes]
-        self.ys = [i[1] for i in problem.nodes]
+        self.xs = [i[0] for i in problem.points]
+        self.ys = [i[1] for i in problem.points]
 
         self.figure = pyplot.figure(figsize=(12, 6))
         self.gs = self.figure.add_gridspec(2, 2)

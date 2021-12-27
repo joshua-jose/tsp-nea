@@ -1,7 +1,8 @@
 import pickle
+import math
 import numpy as np
 
-from numba import jit
+from numba import jit, njit
 from functools import cache
 from os import path
 
@@ -9,18 +10,15 @@ basepath = path.dirname(__file__)
 PERM_FOLDER = path.abspath(path.join(basepath, "../..", "permutation"))
 
 
-@jit(nopython=True, fastmath=True, cache=True)
+@njit(fastmath=True, cache=True)
 def score_path(path, nodes):
-
     length = 0
 
     for i in range(len(path)):
-        node0 = nodes[path[i]]
-        node1 = nodes[path[i-1]]
+        point0 = nodes[path[i]]
+        point1 = nodes[path[i-1]]
 
-        dx = node0[0] - node1[0]
-        dy = node0[1] - node1[1]
-        length += (dx*dx) + (dy*dy)
+        length += point_dist_sq(point0, point1)
 
     return length
 
@@ -29,11 +27,51 @@ def sol_len(sol):
     ''' an actual length of a solution (array of nodes)'''
     length = 0
     for i in range(len(sol)):
-        dx = sol[i][0] - sol[i-1][0]
-        dy = sol[i][1] - sol[i-1][1]
-        length += (dx*dx) + (dy*dy)
+        point0 = sol[i]
+        point1 = sol[i-1]
+
+        length += point_dist_sq(point0, point1)
 
     return length
+
+
+@njit
+def point_dist_sq(a, b):
+    # return np.sum((a-b)**2)
+    dx = a[0] - b[0]
+    dy = a[1] - b[1]
+    return (dx*dx) + (dy*dy)
+
+
+@jit(nopython=True, fastmath=True)
+def shortest_paths(paths, points):
+    n_nodes = len(points)
+    best_path = np.empty((n_nodes,), dtype=np.uint8)
+    best_paths = []
+    best_score = math.inf
+
+    for path in paths:
+        score = score_path(path, points)
+        if score < best_score:
+            best_path = path
+            best_score = score
+            best_paths.append(path)
+
+    return best_paths, best_path
+
+
+def shortest_path(paths, points):
+    n_nodes = len(points)
+    best_path = np.empty((n_nodes,), dtype=np.uint8)
+    best_score = math.inf
+
+    for path in paths:
+        score = score_path(np.array(path), points)
+        if score < best_score:
+            best_path = path
+            best_score = score
+
+    return best_path
 
 
 @cache

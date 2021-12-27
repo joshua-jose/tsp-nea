@@ -13,11 +13,11 @@ pyplot.ion()
 def run_tsp(n):
     problem = Problem(n)
 
-    print(problem.nodes)
+    print(problem.points)
     gui = GUI(problem)
 
-    #brute_solution = tsp_brute_force(problem)
-    #gui.draw_solution(brute_solution, name="Brute force")
+    brute_solution = tsp_brute_force(problem)
+    gui.draw_solution(brute_solution, name="Brute force")
     # gui.draw_iterations(brute_solution)
 
     nn_solution = tsp_nearest_neighbour(problem)
@@ -51,4 +51,4 @@ def tsp_score(n):
 
 
 if __name__ == "__main__":
-    run_tsp(11)
+    run_tsp(9)
