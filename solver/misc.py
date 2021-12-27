@@ -11,16 +11,17 @@ PERM_FOLDER = path.abspath(path.join(basepath, "../..", "permutation"))
 
 @jit(nopython=True, fastmath=True, cache=True)
 def score_solution(path, nodes):
-    total_distance = 0
+    length = 0
 
-    for prev, curr in zip(path, path[1:]):
-        prev_node = nodes[prev]
-        curr_node = nodes[curr]
+    for i in range(len(path)):
+        node0 = nodes[path[i]]
+        node1 = nodes[path[i-1]]
 
-        dx = prev_node[0] - curr_node[0]
-        dy = prev_node[1] - curr_node[1]
-        total_distance += dx*dx + dy*dy
-    return total_distance
+        dx = node0[0] - node1[0]
+        dy = node0[1] - node1[1]
+        length += (dx*dx) + (dy*dy)
+
+    return length
 
 
 @cache

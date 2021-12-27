@@ -12,7 +12,7 @@ class GUI:
         self.ys = [i[1] for i in problem.nodes]
 
         self.figure = pyplot.figure(figsize=(12, 6))
-        self.gs = self.figure.add_gridspec(1, 2)
+        self.gs = self.figure.add_gridspec(2, 2)
         self.subplots = []
 
     def draw_solution(self, solution, name=None):
@@ -32,6 +32,8 @@ class GUI:
         for i in solution.solution:
             edgesx.append(i[0])
             edgesy.append(i[1])
+        edgesx.append(solution.solution[0][0])
+        edgesy.append(solution.solution[0][1])
 
         line.set_xdata(edgesx)
         line.set_ydata(edgesy)

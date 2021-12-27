@@ -13,24 +13,25 @@ pyplot.ion()
 
 def sol_len(sol):
     length = 0
-    for i in range(1, len(sol)):
+    for i in range(len(sol)):
         dx = sol[i][0] - sol[i-1][0]
         dy = sol[i][1] - sol[i-1][1]
-        length += dx*dx + dy*dy
+        length += (dx*dx) + (dy*dy)
 
     return length
 
 
 def run_tsp(n):
     problem = Problem(n)
+    print(problem.nodes)
     gui = GUI(problem)
 
     brute_solution = tsp_brute_force(problem)
     gui.draw_solution(brute_solution, name="Brute force")
     # gui.draw_iterations(brute_solution)
 
-    #nn_solution = tsp_nearest_neighbour(problem)
-    #gui.draw_iterations(nn_solution, name="Nearest Neighbour")
+    nn_solution = tsp_nearest_neighbour(problem)
+    gui.draw_iterations(nn_solution, name="Nearest Neighbour")
 
     hk_solution = tsp_held_karp(problem)
     gui.draw_solution(hk_solution, name="Held Karp")
@@ -60,6 +61,4 @@ def tsp_score(n):
 
 
 if __name__ == "__main__":
-    # run_tsp(10)
-    for i in range(500):
-        tsp_score(9)
+    run_tsp(10)
