@@ -21,8 +21,8 @@ class GUI:
         self.subplots.append(ax)
 
         ax.plot(self.xs, self.ys, 'o')
-        ax.plot(self.problem.centre[0], self.problem.centre[1], 'ro')
-        ax.plot(self.problem.start[0], self.problem.start[1], 'go')
+        #ax.plot(self.problem.centre[0], self.problem.centre[1], 'ro')
+        #ax.plot(self.problem.start[0], self.problem.start[1], 'go')
 
         line, = ax.plot(self.xs, self.ys)
 
@@ -45,8 +45,8 @@ class GUI:
         self.subplots.append(ax)
 
         ax.plot(self.xs, self.ys, 'o')
-        ax.plot(self.problem.centre[0], self.problem.centre[1], 'ro')
-        ax.plot(self.problem.start[0], self.problem.start[1], 'go')
+        #ax.plot(self.problem.centre[0], self.problem.centre[1], 'ro')
+        #ax.plot(self.problem.start[0], self.problem.start[1], 'go')
 
         line, = ax.plot(self.xs, self.ys)
 

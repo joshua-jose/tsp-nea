@@ -1,6 +1,5 @@
 from functools import cache
 import numpy as np
-from numba import jit
 
 from solution import Solution
 

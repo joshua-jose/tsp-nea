@@ -4,7 +4,7 @@ from numba import jit
 
 
 from solution import Solution
-from misc import score_solution, permutations
+from misc import score_path, permutations
 
 
 def tsp_brute_force(problem):
@@ -28,7 +28,7 @@ def find_best_solution(paths, nodes):
     best_score = math.inf
 
     for path in paths:
-        score = score_solution(path, nodes)
+        score = score_path(path, nodes)
         if score < best_score:
             best_path = path
             best_score = score

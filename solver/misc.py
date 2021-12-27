@@ -10,7 +10,8 @@ PERM_FOLDER = path.abspath(path.join(basepath, "../..", "permutation"))
 
 
 @jit(nopython=True, fastmath=True, cache=True)
-def score_solution(path, nodes):
+def score_path(path, nodes):
+
     length = 0
 
     for i in range(len(path)):
@@ -19,6 +20,17 @@ def score_solution(path, nodes):
 
         dx = node0[0] - node1[0]
         dy = node0[1] - node1[1]
+        length += (dx*dx) + (dy*dy)
+
+    return length
+
+
+def sol_len(sol):
+    ''' an actual length of a solution (array of nodes)'''
+    length = 0
+    for i in range(len(sol)):
+        dx = sol[i][0] - sol[i-1][0]
+        dy = sol[i][1] - sol[i-1][1]
         length += (dx*dx) + (dy*dy)
 
     return length
