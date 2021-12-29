@@ -24,7 +24,7 @@
 <body>
     <div class="app d-flex">
 
-        <div class="sidebar bg-dark text-white navbar-dark">
+        <div class="sidebar bg-dark text-white " id="sidebar">
 
 
             <button id="sidebar-toggle" type="button" class="btn shadow-none  d-inline-block" data-bs-toggle="collapse" data-bs-target="#sidebar-collapse">
@@ -41,12 +41,12 @@
                 });
             </script>
 
-            <div id="sidebar-collapse" class="text-center collapse collapse-horizontal show">
-                <div id="sidebar-main" style="padding:15px;">
+            <div id="sidebar-collapse" class="text-center collapse collapse-horizontal show h-100" style="transform-origin: top;">
+                <div id="sidebar-main" style="padding:15px;" class="h-100">
                     <!-- Sidebar contents-->
 
                     <div id="title-text-box" style="display: flex; justify-content: center; align-items: center;">
-                        <h3 class="display-3 text-center"> TSP </h3>
+                        <h3 class="display-3 text-center" style="font-size: 4rem;"> TSP </h3>
                     </div>
                     <hr />
 
@@ -62,30 +62,30 @@
                     </div>
 
                     <!-- main controls (in box)-->
-                    <p></p>
+                    </br>
                     <div id="main-controls" class="border border-primary rounded" style="padding: 15px; border-width:2px !important;">
                         <!-- Algorithm select dropdown -->
-                        <select class="form-select form-select-dark bg-dark text-white" aria-label="Algorithm select">
+                        <select class="form-select form-select-dark bg-dark text-white rounded" aria-label="Algorithm select">
                             <option selected>Brute Force</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
                             <option value="3">Three</option>
                         </select>
 
-                        <p></p>
+                        </br>
                         <!-- playback control-->
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-arrow-repeat" style="font-size: 1.5rem;"></i></button>
                             <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-play-fill" style="font-size: 1.5rem;"></i></button>
                             <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-skip-forward-fill" style="font-size: 1.5rem;"></i></button>
                         </div>
-                        <p></p>
+                        </br></br>
                         <!-- speed control -->
                         <label for="speedRange" class="form-label">Speed</label>
                         <input type="range" class="form-range" id="speedRange">
 
                     </div>
-                    <p> </p>
+                    </br>
 
                     <!-- Toggle switches-->
                     <div class="form-check form-switch">
@@ -99,7 +99,22 @@
 
                     <hr />
 
-                    <button type="button" class="btn btn-secondary shadow-none">Primary</button>
+                    <!-- Random points -->
+                    <label for="pointsRange" class="form-label">Number of Random Points</label>
+                    <input type="range" class="form-range" id="pointsRange">
+
+                    <button type="button" class="btn btn-secondary shadow-none"><i class="bi bi-shuffle"></i> Generate</button>
+                    </br></br>
+                    <button type="button" class="btn btn-secondary shadow-none"><i class="bi bi-cursor"></i> Place points</button>
+
+                    <!--Import -->
+                    <hr />
+                    <p>Import </p>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary shadow-none">Cities</button>
+                        <button type="button" class="btn btn-secondary shadow-none">Points</button>
+                        <button type="button" class="btn btn-secondary shadow-none">Matrix</button>
+                    </div>
                     <!-- End sidebar contents-->
                 </div>
             </div>

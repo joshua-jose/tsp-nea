@@ -50,3 +50,33 @@ function resize() {
     rect.translation.set(two.width / 2, two.height / 2);
     two.update();
 }
+
+
+let outer = document.getElementById('sidebar-collapse'),
+    wrapper = document.getElementById('sidebar'),
+    maxWidth = outer.offsetWidth,
+    maxHeight = outer.offsetHeight;
+
+window.addEventListener("resize", barResize);
+resize();
+
+function barResize() {
+    let scale,
+        width = window.innerWidth,
+        height = window.innerHeight,
+        isMax = width >= maxWidth && height >= maxHeight;
+
+    scale = Math.min(width / maxWidth, height / maxHeight);
+    outer.style.transform = isMax ? '' : 'scale(' + scale + ')';
+    wrapper.style.width = isMax ? '' : maxWidth * scale;
+    wrapper.style.height = isMax ? '' : maxHeight * scale;
+
+    // This code is a duplicate of inline code in the sidebar
+    if (!isMax) {
+        var offset = $('#sidebar-toggle').outerHeight() * scale;
+        var padding = parseInt($('#sidebar-toggle').css('paddingTop'));
+
+        $('#sidebar-collapse').css('margin-top', -offset);
+        $('#title-text-box').css('height', offset - padding);
+    }
+}
