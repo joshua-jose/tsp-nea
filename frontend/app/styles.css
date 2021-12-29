@@ -13,10 +13,25 @@ body {
     height:100vh;
 }
 .sidebar{
-    width:var(--sidebar-width);
+    max-width:var(--sidebar-width);
     height:100vh;
     float: left;
-    background-color: rgb(34, 34, 34);
+    /*background-color: rgb(34, 34, 34);*/
+}
+#sidebar-main{
+    width: var(--sidebar-width);
+}
+
+#sidebar-toggle{
+    padding-top: 15px;
+}
+
+.form-select-dark{
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    border-color: var(--bs-primary);
+}
+.form-select-dark > option{
+    background-color: var(--bs-gray-800);
 }
 
 .view-canvas{
@@ -30,5 +45,4 @@ body {
 .viewport{
     float: left;
     height:100vh;
-    width:calc(100% - var(--sidebar-width));
 }

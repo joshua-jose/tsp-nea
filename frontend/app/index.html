@@ -3,25 +3,113 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
-    <link href="./styles.css" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://*.jsdelivr.net https://*.jquery.com; img-src 'self' 'unsafe-inline' data: ">
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+    <link href="styles.css" rel="stylesheet">
     <script src="two.min.js"></script>
-    <title>Hello World!</title>
+
+    <title>The Travelling Salesman Problem</title>
 </head>
 
 <body>
-    <div class="container">
+    <div class="app d-flex">
 
-        <div class="sidebar">
-            <p> hello </p>
+        <div class="sidebar bg-dark text-white navbar-dark">
+
+
+            <button id="sidebar-toggle" type="button" class="btn shadow-none  d-inline-block" data-bs-toggle="collapse" data-bs-target="#sidebar-collapse">
+                <i class="bi bi-list" style="font-size: 2rem; color: white;"></i>
+            </button>
+
+            <script>
+                $(document).ready(function () {
+                    var offset = $('#sidebar-toggle').outerHeight();
+                    var padding = parseInt($('#sidebar-toggle').css('paddingTop'));
+
+                    $('#sidebar-collapse').css('margin-top', -offset);
+                    $('#title-text-box').css('height', offset - padding);
+                });
+            </script>
+
+            <div id="sidebar-collapse" class="text-center collapse collapse-horizontal show">
+                <div id="sidebar-main" style="padding:15px;">
+                    <!-- Sidebar contents-->
+
+                    <div id="title-text-box" style="display: flex; justify-content: center; align-items: center;">
+                        <h3 class="display-3 text-center"> TSP </h3>
+                    </div>
+                    <hr />
+
+                    <!-- Distance and time stats -->
+                    <div class="row text-left" style="text-align: left !important;">
+                        <div class="col col-7 text-left">Shortest path: </div>
+                        <div class="col">1</div>
+
+                    </div>
+                    <div class="row text-left" style="text-align: left !important;">
+                        <div class="col col-7 text-left">Time taken: </div>
+                        <div class="col">2s</div>
+                    </div>
+
+                    <!-- main controls (in box)-->
+                    <p></p>
+                    <div id="main-controls" class="border border-primary rounded" style="padding: 15px; border-width:2px !important;">
+                        <!-- Algorithm select dropdown -->
+                        <select class="form-select form-select-dark bg-dark text-white" aria-label="Algorithm select">
+                            <option selected>Brute Force</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+
+                        <p></p>
+                        <!-- playback control-->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-arrow-repeat" style="font-size: 1.5rem;"></i></button>
+                            <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-play-fill" style="font-size: 1.5rem;"></i></button>
+                            <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-skip-forward-fill" style="font-size: 1.5rem;"></i></button>
+                        </div>
+                        <p></p>
+                        <!-- speed control -->
+                        <label for="speedRange" class="form-label">Speed</label>
+                        <input type="range" class="form-range" id="speedRange">
+
+                    </div>
+                    <p> </p>
+
+                    <!-- Toggle switches-->
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="showStepsSwitch" checked>
+                        <label class="form-check-label" for="showStepsSwitch">Show steps</label>
+                    </div>
+                    <div class="form-check form-switch bg-dark">
+                        <input class="form-check-input" type="checkbox" id="everyStepSwitch" checked>
+                        <label class="form-check-label" for="everyStepSwitch">Show every step</label>
+                    </div>
+
+                    <hr />
+
+                    <button type="button" class="btn btn-secondary shadow-none">Primary</button>
+                    <!-- End sidebar contents-->
+                </div>
+            </div>
+
+        </div> <!-- Sidebar -->
+
+        <div class="viewport flex-fill">
+            <canvas class="view-canvas"></canvas>
         </div>
 
-        <div class="viewport">
-            <canvas class="view-canvas">
-            </canvas>
-        </div>
         <!-- You can also require other files to run in this process -->
         <script src="./renderer.js"></script>
 

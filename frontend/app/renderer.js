@@ -1,5 +1,7 @@
 var viewport = document.getElementsByClassName('viewport')[0];
 var canvas = document.getElementsByClassName('view-canvas')[0]
+var ctx = canvas.getContext('2d');
+var rect;
 
 var two = new Two({
     autostart: true,
@@ -7,10 +9,15 @@ var two = new Two({
     domElement: canvas
 }).appendTo(viewport);
 
-window.addEventListener("resize", resize);
+// Set up event listeners
+//window.addEventListener("resize", resize);
+new ResizeObserver(resize).observe(viewport);
 
-var rect;
+two.bind('update', function () {
+    rect.rotation += 0.01;
+});
 
+// set up once
 draw();
 resize();
 
@@ -20,7 +27,7 @@ function draw() {
             let size = 64;
             let spacing = 2;
             let delta = size + spacing;
-            var r = two.makeRectangle(i * delta + spacing + size / 2, j * delta + spacing + size / 2, size, size);
+            var r = two.makeRectangle(i * delta + size / 2, j * delta + size / 2, size, size);
             r.fill = 'rgb(255, 255, 0)';
         }
     }
@@ -28,11 +35,6 @@ function draw() {
     rect = two.makeRectangle(two.width / 2, two.height / 2, 50, 50);
     rect.fill = 'rgb(255, 100, 100)';
 }
-
-two.bind('update', function () {
-    rect.rotation += 0.01;
-});
-
 function resize() {
     var width = viewport.offsetWidth;
     var height = viewport.offsetHeight;
@@ -43,26 +45,8 @@ function resize() {
     canvas.width = width;
     canvas.height = height;
 
-    var ctx = canvas.getContext('2d');
     ctx.scale(1 / scale, 1 / scale);
 
     rect.translation.set(two.width / 2, two.height / 2);
+    two.update();
 }
-
-/*
-//window.addEventListener('resize', updateCanvas);
-//updateCanvas();
-function updateCanvas() {
-    var canvas = document.getElementsByClassName('view-canvas')[0],
-        ctx = canvas.getContext('2d');
-
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    ctx.fillStyle = 'yellow';
-    for (var i = 0; i < 75; ++i) {
-        for (var j = 0; j < 75; ++j)
-            ctx.fillRect(i * 18 + 2, j * 18 + 2, 16, 16);
-    }
-}
-*/
