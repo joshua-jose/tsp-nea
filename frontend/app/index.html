@@ -15,8 +15,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
-    <link href="styles.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Two.js -->
     <script src="two.min.js"></script>
+
+    <link href="styles.css" rel="stylesheet">
 
     <title>The Travelling Salesman Problem</title>
 </head>
@@ -30,16 +35,6 @@
             <button id="sidebar-toggle" type="button" class="btn shadow-none  d-inline-block" data-bs-toggle="collapse" data-bs-target="#sidebar-collapse">
                 <i class="bi bi-list" style="font-size: 2rem; color: white;"></i>
             </button>
-
-            <script>
-                $(document).ready(function () {
-                    var offset = $('#sidebar-toggle').outerHeight();
-                    var padding = parseInt($('#sidebar-toggle').css('paddingTop'));
-
-                    $('#sidebar-collapse').css('margin-top', -offset);
-                    $('#title-text-box').css('height', offset - padding);
-                });
-            </script>
 
             <div id="sidebar-collapse" class="text-center collapse collapse-horizontal show h-100" style="transform-origin: top;">
                 <div id="sidebar-main" style="padding:15px;" class="h-100">
@@ -103,13 +98,13 @@
                     <label for="pointsRange" class="form-label">Number of Random Points</label>
                     <input type="range" class="form-range" id="pointsRange">
 
-                    <button type="button" class="btn btn-secondary shadow-none"><i class="bi bi-shuffle"></i> Generate</button>
+                    <button type="button" id="generateButton" class="btn btn-secondary shadow-none"><i class="bi bi-shuffle"></i> Generate</button>
                     </br></br>
-                    <button type="button" class="btn btn-secondary shadow-none"><i class="bi bi-cursor"></i> Place points</button>
+                    <button type="button" id="placePointsButton" class="btn btn-secondary shadow-none"><i class="bi bi-cursor"></i> Place points</button>
 
                     <!--Import -->
                     <hr />
-                    <p>Import </p>
+                    <p>Import</p>
                     <div class="btn-group">
                         <button type="button" class="btn btn-secondary shadow-none">Cities</button>
                         <button type="button" class="btn btn-secondary shadow-none">Points</button>
@@ -121,12 +116,15 @@
 
         </div> <!-- Sidebar -->
 
-        <div class="viewport flex-fill">
-            <canvas class="view-canvas"></canvas>
+        <div class="flex-fill" id="viewport">
+            <canvas id="view-canvas"></canvas>
         </div>
 
-        <!-- You can also require other files to run in this process -->
+        <!-- Canvas renderer script -->
         <script src="./renderer.js"></script>
+
+        <!-- UI setup script -->
+        <script src="./ui.js"></script>
 
     </div>
 </body>
