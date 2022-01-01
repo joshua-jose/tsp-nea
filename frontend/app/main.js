@@ -1,27 +1,37 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain, contextBridge } = require('electron')
 const path = require('path')
+
 
 try {
     require('electron-reloader')(module)
 } catch (_) { }
 
+let win = null;
+
 function createWindow() {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    win = new BrowserWindow({
         width: 1200,
         height: 900,
+        backgroundColor: '#343A40',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             autoHideMenuBar: true
+        },
+        titleBarStyle: 'show', // hidden, show
+        titleBarOverlay: {
+            color: '#1f2327',
+            symbolColor: '#74b1be'
         }
     })
-    //mainWindow.removeMenu();
+    //win.removeMenu();
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, 'index.html'))
+    win.loadFile(path.join(__dirname, 'index.html'))
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    // win.webContents.openDevTools()
+
 }
 
 // This method will be called when Electron has finished
@@ -35,6 +45,10 @@ app.whenReady().then(() => {
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+
+    ipcMain.on('tspMessage', (event, message) => {
+        handleTSPEvent(message);
+    });
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -44,5 +58,7 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+function handleTSPEvent(message) {
+    console.log('got an IPC message: ', message);
+    win.webContents.send('ipcReturn', { 'ipcReturn': 'tspReturn', 'TEST': 'Test message' });
+}

@@ -3,6 +3,8 @@ let outer = document.getElementById('sidebar-collapse'),
     maxWidth = outer.scrollWidth,
     maxHeight = outer.scrollHeight;
 
+let runIconClass = 'bi-play-fill';
+let pauseIconClass = 'bi-pause-fill';
 
 function barResize() {
     let scale,
@@ -29,7 +31,36 @@ function setSidebarOffset(scale) {
     $('#title-text-box').css('height', offset - padding);
 }
 
+function UISetPlaying() {
+    var runIcon = $('#runButton > i');
+    var spinner = $('#repeatButton > .spinner-border');
+    var repeatIcon = $('#repeatButton > i');
+
+    runIcon.removeClass(runIconClass);
+    runIcon.addClass(pauseIconClass);
+
+    repeatIcon.css("display", "none");
+    spinner.css('display', 'block');
+}
+
+function UISetStop() {
+    var runIcon = $('#runButton > i');
+    var spinner = $('#repeatButton > .spinner-border');
+    var repeatIcon = $('#repeatButton > i');
+
+    runIcon.removeClass(pauseIconClass);
+    runIcon.addClass(runIconClass);
+
+    repeatIcon.css('display', 'block');
+    spinner.css('display', 'none');
+}
+
 $(document).ready(function () {
+    /*
+    $('[data-toggle="tooltip"]').tooltip({
+        offset: setOffset
+    });
+    */
     setSidebarOffset(1);
     //window.addEventListener("resize", barResize);
     //barResize();
