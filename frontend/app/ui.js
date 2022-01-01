@@ -62,6 +62,28 @@ $(document).ready(function () {
     });
     */
     setSidebarOffset(1);
+    window.electron.windowTriggerResizeEvent();
     //window.addEventListener("resize", barResize);
     //barResize();
 });
+
+$('#min-button').click(function () {
+    window.electron.windowMinimize();
+})
+$('#max-button').click(function () {
+    window.electron.windowMaxToggle();
+})
+$('#restore-button').click(function () {
+    window.electron.windowMaxToggle();
+})
+$('#close-button').click(function () {
+    window.electron.windowClose();
+})
+
+window.electron.addMaxMinEventListener(function (isMaximized) {
+    if (isMaximized) {
+        $('body').addClass('maximized');
+    } else {
+        $('body').removeClass('maximized');
+    }
+})

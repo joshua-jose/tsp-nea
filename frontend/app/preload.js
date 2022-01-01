@@ -10,22 +10,34 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 })
 */
-const ipcRenderer = require('electron').ipcRenderer;
+const { ipcRenderer, contextBridge } = require('electron');
 
-const allowedMessages = ['tspMessage'];
+contextBridge.exposeInMainWorld('tspAPI', {
+    tspStart: (message) => ipcRenderer.send('tspStart', message),
+    tspStop: () => ipcRenderer.send('tspStop', {}),
 
-process.once('loaded', () => {
-    window.addEventListener('message', event => {
-        // do something with custom event
-        const message = event.data;
-        if (!message.hasOwnProperty('ipcMessage')) return;
+    addEventListener: (eventName, cb) => {
+        ipcRenderer.on('ipcReturn', function (event, message) {
+            if (!message.hasOwnProperty('ipcReturn')) return;
 
-        if (allowedMessages.includes(message.ipcMessage)) {
-            ipcRenderer.send(message.ipcMessage, message);
-        }
-    });
-});
+            if (message.ipcReturn === eventName)
+                cb(message);
+        });
+    }
+})
 
-ipcRenderer.on('ipcReturn', function (evt, message) {
-    window.postMessage(message);
-});
+contextBridge.exposeInMainWorld('electron', {
+    windowClose: () => ipcRenderer.send('windowClose', {}),
+    windowMinimize: () => ipcRenderer.send('windowMinimize', {}),
+    windowMaximize: () => ipcRenderer.send('windowMaximize', {}),
+    windowUnmaximize: () => ipcRenderer.send('windowUnmaximize', {}),
+    windowMaxToggle: () => ipcRenderer.send('windowMaxToggle', {}),
+    windowTriggerResizeEvent: () => ipcRenderer.send('windowTriggerResizeEvent', {}),
+
+    addMaxMinEventListener: (cb) => {
+        ipcRenderer.on('winMaxMin', function (event, message) {
+            cb(message.isMaximized);
+        });
+    }
+
+})

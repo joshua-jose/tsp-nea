@@ -1,7 +1,3 @@
-// Data & logic section
-var chartPoints = [[0, 1], [1, 2], [3, 4], [5, 6]];
-var chartPath = [0, 1, 2, 3];
-
 // --------------------------------------------------------------------------------------------------
 
 function rand(min, max) {
@@ -9,10 +5,9 @@ function rand(min, max) {
 }
 
 // creates random points
-function generatePoints() {
+function generatePoints(count) {
     var min = 0;
     var max = 1;
-    var count = 8;
 
     var data = [];
     var i, xvalue, yvalue;
@@ -53,47 +48,40 @@ function shuffle(array) {
 }
 // --------------------------------------------------------------------------------------------------
 
-runAlgo = false;
-function testAlgo() {
-    if (!runAlgo) return;
-
-    chartPath = generatePath(8);
-    setChartPath(chartPath);
-
-    setTimeout(testAlgo, 750);
-}
+var chartPoints = [[0, 1], [1, 2], [3, 4], [5, 6]];
+var chartPath = [0, 1, 2, 3];
 
 $('#generateButton').click(function () {
-    chartPoints = generatePoints();
+    UISetStop();
+    runAlgo = false;
+    window.tspAPI.tspStop();
+
+    chartPoints = generatePoints(12);
     setChartPoints(chartPoints);
     setChartPath([]);
-    window.postMessage({
-        ipcMessage: 'tspMessage',
-        someData: 123,
-    });
 });
 
-
+var runAlgo = false;
 $('#runButton').click(function () {
     if (!runAlgo) {
         UISetPlaying();
         runAlgo = true;
-        testAlgo();
+
+        window.tspAPI.tspStart({ points: chartPoints });
     }
     else {
         UISetStop();
         runAlgo = false;
+        window.tspAPI.tspStop();
     };
 });
 
-window.addEventListener('message', event => {
-    const message = event.data;
-    if (!message.hasOwnProperty('ipcReturn')) return;
-    console.log(message);
-});
+window.tspAPI.addEventListener('tspSetPath', message => {
+    setChartPath(message.path);
+})
 
 function logicMain() {
-    chartPoints = generatePoints();
+    chartPoints = generatePoints(8);
     setChartPoints(chartPoints);
 }
 $(document).ready(logicMain);

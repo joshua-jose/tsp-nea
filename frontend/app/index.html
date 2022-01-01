@@ -21,14 +21,37 @@
     <!-- Two.js -->
     <script src="two.min.js"></script>
 
-
     <link href="styles.css" rel="stylesheet">
 
     <title>The Travelling Salesman Problem</title>
 </head>
 
 <body>
-    <div id="titlebar"> </div>
+    <div id="titlebar">
+        <div id="drag-region">
+            <div id="window-title">
+                <span>TSP</span>
+            </div>
+        </div>
+
+        <div id="window-controls">
+            <div class="button" id="min-button">
+                <i class="bi bi-dash-lg"></i>
+            </div>
+
+            <div class="button" id="max-button">
+                <i class="bi bi-app" style="font-size: 0.75rem;padding-bottom: 2px;"></i>
+            </div>
+
+            <div class="button" id="restore-button">
+                <i class="bi bi-app" style="font-size: 0.75rem;padding-bottom: 2px;"></i>
+            </div>
+
+            <div class="button" id="close-button">
+                <i class="bi bi-x-lg" style="font-size: 0.75rem;padding-bottom: 2px;"></i>
+            </div>
+        </div>
+    </div>
     <div class="app d-flex">
 
         <div class="sidebar bg-dark text-white " id="sidebar">
@@ -73,6 +96,7 @@
                         <!-- playback control-->
                         <div class="btn-group">
                             <button type="button" id="repeatButton" class="btn btn-primary shadow-none">
+
                                 <i class="bi bi-arrow-repeat" style="font-size: 1.5rem;"></i>
                                 <div class="spinner-border" style="display: none; width: 1.5rem; height: 1.5rem;">
                                 </div>
