@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, contextBridge } = require('electron')
 const path = require('path')
-
+const child_process = require('child_process');
 
 try {
     require('electron-reloader')(module)
@@ -43,8 +43,8 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
-    win.on('maximize', toggleMaxMin);
-    win.on('unmaximize', toggleMaxMin);
+    win.on('maximize', sendMaximizeEvent);
+    win.on('unmaximize', sendMaximizeEvent);
 
     //win.once('ready-to-show', () => {
     win.webContents.once('did-finish-load', function () {
@@ -74,9 +74,10 @@ function initWindowIPC() {
     ipcMain.on('windowMaximize', (event, message) => {
         win.maximize();
     });
-    ipcMain.on('windowTriggerResizeEvent', (event, message) => {
-        toggleMaxMin();
-    });
+
+    ipcMain.on('isMaximized', (event, arg) => {
+        event.returnValue = win.isMaximized()
+    })
 
     ipcMain.on('windowMaxToggle', (event, message) => {
         if (win.isMaximized())
@@ -85,12 +86,14 @@ function initWindowIPC() {
             win.maximize();
     });
 }
-function toggleMaxMin() {
-    win.webContents.send('winMaxMin', { 'isMaximized': win.isMaximized() });
+function sendMaximizeEvent() {
+    win.webContents.send('maximizeEvent', { 'isMaximized': win.isMaximized() });
 }
 initWindowIPC();
 
 // TSP logic 
+
+let solverProcess = null;
 
 var runAlgo = false;
 let points = [];
@@ -112,15 +115,58 @@ tspSetPath: gives the front end the next path to show
 
 function initTSP() {
 
+    //var srv = net.createServer((sock) => { });
+    //srv.listen(0, () => { });
+    //srv.close();
+    //var port = srv.address().port;
+    /*
+    var port = 2445;
+    const wss = new WebSocket.Server({ port: port })
+
+    wss.on('connection', function connection(ws) {
+        ws.send('first');
+        ws.on('message', function message(data) {
+            console.log('node received: %s', data);
+        });
+
+        ws.send('something');
+    });
+    */
+    // Add arguments for algorithm etc.
+
+
     ipcMain.on('tspStart', (event, message) => {
         runAlgo = true;
         points = message.points;
 
-        testAlgo();
+        var data = { 'points': points, 'algorithm': "Brute Force" };
+        solverProcess = child_process.spawn('python', ['-u', '../solver/main.py', '--data', JSON.stringify(data)]);
+
+        solverProcess.stdout.once('data', (msg) => {
+            ipcPostMessage('tspSetPath', { 'path': JSON.parse(msg).path });
+            ipcPostMessage('tspDone', {});
+            solverProcess.stdout.removeAllListeners();
+            solverProcess.stderr.removeAllListeners();
+            solverProcess.kill();
+        });
+
+        solverProcess.stderr.on('data', (msg) => {
+            console.log(msg.toString());
+        });
+
+        //testAlgo();
     });
 
     ipcMain.on('tspStop', (event, message) => {
         runAlgo = false;
+
+        if (solverProcess !== null) {
+            solverProcess.stdout.removeAllListeners();
+            solverProcess.stderr.removeAllListeners();
+            solverProcess.kill();
+            solverProcess = null;
+        }
+
     });
 }
 

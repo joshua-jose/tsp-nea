@@ -48,6 +48,14 @@ function shuffle(array) {
 }
 // --------------------------------------------------------------------------------------------------
 
+/*
+ * Logo: circle background with TSP nodes and connections over it
+ * python: use threading to be able to pause execution
+ * get list of algorithms from python and use that to create option select
+ * either add fullscreen support or disable fullscreening
+ * lock controls while spawning process
+ */
+
 var chartPoints = [[0, 1], [1, 2], [3, 4], [5, 6]];
 var chartPath = [0, 1, 2, 3];
 
@@ -56,7 +64,7 @@ $('#generateButton').click(function () {
     runAlgo = false;
     window.tspAPI.tspStop();
 
-    chartPoints = generatePoints(12);
+    chartPoints = generatePoints(8);
     setChartPoints(chartPoints);
     setChartPath([]);
 });
@@ -78,6 +86,11 @@ $('#runButton').click(function () {
 
 window.tspAPI.addEventListener('tspSetPath', message => {
     setChartPath(message.path);
+})
+
+window.tspAPI.addEventListener('tspDone', message => {
+    UISetStop();
+    runAlgo = false;
 })
 
 function logicMain() {

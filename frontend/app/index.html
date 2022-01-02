@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://*.jsdelivr.net https://*.jquery.com; img-src 'self' 'unsafe-inline' data: ">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://*.jsdelivr.net https://*.jquery.com; img-src 'self' 'unsafe-inline' data:; script-src 'self' https://*.jsdelivr.net https://*.jquery.com ">
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -54,36 +54,36 @@
     </div>
     <div class="app d-flex">
 
-        <div class="sidebar bg-dark text-white " id="sidebar">
+        <div class="sidebar bg-dark text-white" id="sidebar">
 
 
-            <button id="sidebar-toggle" type="button" class="btn shadow-none  d-inline-block" data-bs-toggle="collapse" data-bs-target="#sidebar-collapse">
+            <button id="sidebar-toggle" type="button" class="btn shadow-none" data-bs-toggle="collapse" data-bs-target="#sidebar-collapse">
                 <i class="bi bi-list" style="font-size: 2rem; color: white;"></i>
             </button>
 
             <div id="sidebar-collapse" class="text-center collapse collapse-horizontal show h-100" style="transform-origin: top;">
-                <div id="sidebar-main" style="padding:15px;" class="h-100">
+                <div id="sidebar-main">
                     <!-- Sidebar contents-->
 
-                    <div id="title-text-box" style="display: flex; justify-content: center; align-items: center;">
+                    <div id="title-text-box">
                         <h3 class="display-3 text-center" style="font-size: 4rem;"> TSP </h3>
                     </div>
                     <hr />
 
                     <!-- Distance and time stats -->
-                    <div class="row text-left" style="text-align: left !important;">
+                    <div class="row text-left align-left">
                         <div class="col col-7 text-left">Shortest path: </div>
                         <div class="col">1</div>
 
                     </div>
-                    <div class="row text-left" style="text-align: left !important;">
+                    <div class="row text-left align-left">
                         <div class="col col-7 text-left">Time taken: </div>
                         <div class="col">2s</div>
                     </div>
 
                     <!-- main controls (in box)-->
                     </br>
-                    <div id="main-controls" class="border border-primary rounded" style="padding: 15px; border-width:2px !important;">
+                    <div id="main-controls" class="border border-primary rounded">
                         <!-- Algorithm select dropdown -->
                         <select class="form-select form-select-dark bg-dark text-white rounded" aria-label="Algorithm select">
                             <option selected>Brute Force</option>
@@ -97,12 +97,16 @@
                         <div class="btn-group">
                             <button type="button" id="repeatButton" class="btn btn-primary shadow-none">
 
-                                <i class="bi bi-arrow-repeat" style="font-size: 1.5rem;"></i>
+                                <i class="bi bi-arrow-repeat big-icon"></i>
                                 <div class="spinner-border" style="display: none; width: 1.5rem; height: 1.5rem;">
                                 </div>
                             </button>
-                            <button type="button" id="runButton" class="btn btn-primary shadow-none"><i class="bi bi-play-fill" style="font-size: 1.5rem;"></i></button>
-                            <button type="button" class="btn btn-primary shadow-none"><i class="bi bi-skip-forward-fill" style="font-size: 1.5rem;"></i></button>
+                            <button type="button" id="runButton" class="btn btn-primary shadow-none">
+                                <i class="bi bi-play-fill big-icon"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary shadow-none">
+                                <i class="bi bi-skip-forward-fill big-icon"></i>
+                            </button>
                         </div>
                         </br></br>
                         <!-- speed control -->
@@ -128,9 +132,13 @@
                     <label for="pointsRange" class="form-label">Number of Random Points</label>
                     <input type="range" class="form-range" id="pointsRange">
 
-                    <button type="button" id="generateButton" class="btn btn-secondary shadow-none"><i class="bi bi-shuffle"></i> Generate</button>
+                    <button type="button" id="generateButton" class="btn btn-secondary shadow-none">
+                        <i class="bi bi-shuffle"></i> Generate
+                    </button>
                     </br></br>
-                    <button type="button" id="placePointsButton" class="btn btn-secondary shadow-none"><i class="bi bi-cursor"></i> Place points</button>
+                    <button type="button" id="placePointsButton" class="btn btn-secondary shadow-none">
+                        <i class="bi bi-cursor"></i> Place points
+                    </button>
 
                     <!--Import -->
                     <hr />

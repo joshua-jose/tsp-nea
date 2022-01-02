@@ -27,15 +27,15 @@ contextBridge.exposeInMainWorld('tspAPI', {
 })
 
 contextBridge.exposeInMainWorld('electron', {
-    windowClose: () => ipcRenderer.send('windowClose', {}),
-    windowMinimize: () => ipcRenderer.send('windowMinimize', {}),
-    windowMaximize: () => ipcRenderer.send('windowMaximize', {}),
-    windowUnmaximize: () => ipcRenderer.send('windowUnmaximize', {}),
-    windowMaxToggle: () => ipcRenderer.send('windowMaxToggle', {}),
-    windowTriggerResizeEvent: () => ipcRenderer.send('windowTriggerResizeEvent', {}),
+    windowClose: () => ipcRenderer.send('windowClose'),
+    windowMinimize: () => ipcRenderer.send('windowMinimize'),
+    windowMaximize: () => ipcRenderer.send('windowMaximize'),
+    windowUnmaximize: () => ipcRenderer.send('windowUnmaximize'),
+    windowMaxToggle: () => ipcRenderer.send('windowMaxToggle'),
+    windowIsMazimized: () => { return ipcRenderer.sendSync('isMaximized'); },
 
-    addMaxMinEventListener: (cb) => {
-        ipcRenderer.on('winMaxMin', function (event, message) {
+    addMaxEventListener: (cb) => {
+        ipcRenderer.on('maximizeEvent', function (event, message) {
             cb(message.isMaximized);
         });
     }

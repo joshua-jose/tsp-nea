@@ -1,4 +1,4 @@
-import numpy as np
+from math import inf
 
 from solution import Solution
 from misc import point_dist_sq
@@ -16,7 +16,7 @@ def tsp_nearest_neighbour(problem):
 
     while len(unused_nodes) > 0:
         nearest_neighbour_index = 0
-        nearest_distance = np.math.inf
+        nearest_distance = inf
 
         for i in unused_nodes:
             distance = point_dist_sq(problem.points[i], curr_node)

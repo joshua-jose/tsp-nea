@@ -24,6 +24,8 @@ body {
 }
 #sidebar-main{
     width: var(--sidebar-width);
+    padding:15px;
+    height:100%;
 }
 
 #sidebar-toggle{
@@ -39,6 +41,24 @@ body {
     border-radius: 0.25rem !important;
 }
 
+#title-text-box{
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.align-left{
+    text-align: left !important;
+}
+
+#main-controls{
+    padding: 15px; 
+    border-width:2px !important;
+}
+
+.big-icon{
+    font-size: 1.5rem;
+}
 
 /* --------------------------- Canvas --------------------------- */
 

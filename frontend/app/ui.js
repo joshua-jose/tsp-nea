@@ -62,25 +62,21 @@ $(document).ready(function () {
     });
     */
     setSidebarOffset(1);
-    window.electron.windowTriggerResizeEvent();
+
+    // This exists to get the maximised status when the webpage is loaded
+    if (window.electron.windowIsMazimized())
+        $('body').addClass('maximized');
+
     //window.addEventListener("resize", barResize);
     //barResize();
 });
 
-$('#min-button').click(function () {
-    window.electron.windowMinimize();
-})
-$('#max-button').click(function () {
-    window.electron.windowMaxToggle();
-})
-$('#restore-button').click(function () {
-    window.electron.windowMaxToggle();
-})
-$('#close-button').click(function () {
-    window.electron.windowClose();
-})
+$('#min-button').click(() => window.electron.windowMinimize());
+$('#max-button').click(() => window.electron.windowMaxToggle());
+$('#restore-button').click(() => window.electron.windowMaxToggle());
+$('#close-button').click(() => window.electron.windowClose());
 
-window.electron.addMaxMinEventListener(function (isMaximized) {
+window.electron.addMaxEventListener(function (isMaximized) {
     if (isMaximized) {
         $('body').addClass('maximized');
     } else {

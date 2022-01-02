@@ -1,5 +1,4 @@
 from functools import cache
-import numpy as np
 
 from solution import Solution
 from misc import shortest_path

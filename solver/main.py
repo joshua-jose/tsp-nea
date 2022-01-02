@@ -1,54 +1,64 @@
-from matplotlib import pyplot
+from tsp import run_tsp, tsp_score
+import argparse
+#import websockets
+#import asyncio
+from time import sleep
 
 from brute import tsp_brute_force
 from nearest_neighbour import tsp_nearest_neighbour
 from held_karp import tsp_held_karp
-from gui import *
 from problem import Problem
-from misc import sol_len
-
-pyplot.ion()
-
-
-def run_tsp(n):
-    problem = Problem(n)
-
-    print(problem.points)
-    gui = GUI(problem)
-
-    brute_solution = tsp_brute_force(problem)
-    gui.draw_solution(brute_solution, name="Brute force")
-    # gui.draw_iterations(brute_solution)
-
-    nn_solution = tsp_nearest_neighbour(problem)
-    gui.draw_iterations(nn_solution, name="Nearest Neighbour")
-
-    hk_solution = tsp_held_karp(problem)
-    gui.draw_solution(hk_solution, name="Held Karp")
-
-    #brute_score = sol_len(brute_solution.solution)
-    #hk_score = sol_len(hk_solution.solution)
-    #print(brute_score, hk_score)
-
-    gui.loop()
+import numpy as np
+import json
+import sys
 
 
-def tsp_score(n):
-    problem = Problem(n)
+def run_as_daemon(data):
+    data = json.loads(data)
 
-    brute_solution = tsp_brute_force(problem)
-    hk_solution = tsp_held_karp(problem)
+    if not('points' in data.keys() and 'algorithm' or data.keys()):
+        return
 
-    brute_score = sol_len(brute_solution.solution)
-    hk_score = sol_len(hk_solution.solution)
+    points = data["points"]
+    problem = Problem(len(points))
+    problem.points = np.array(points)
 
-    print(brute_score, hk_score)
-    if round(hk_score, 4) != round(brute_score, 4):
-        gui = GUI(problem)
-        gui.draw_solution(brute_solution, name="Brute force")
-        gui.draw_solution(hk_solution, name="Held Karp")
-        gui.loop()
+    if data["algorithm"] == "Brute Force":
+        solution = tsp_brute_force(problem)
 
+    message = {'path': solution.path.tolist(), 'final': True}
+    print(json.dumps(message))
+
+    #nn_solution = tsp_nearest_neighbour(problem)
+    #hk_solution = tsp_held_karp(problem)
+
+    # asyncio.run(client(port))
+
+
+'''
+async def client(port):
+    async with websockets.connect("ws://localhost:"+str(port)) as websocket:
+        await websocket.send("Hello world!")
+        while True:
+            r = await websocket.recv()
+            print("Python recieved: ", r)
+'''
 
 if __name__ == "__main__":
-    run_tsp(9)
+    parser = argparse.ArgumentParser(
+        description='Calculates solutions for the Travelling Salesman Problem')
+
+    '''
+    parser.add_argument('--daemon', nargs=1, metavar="port", type=int,
+                        help='Run as a daemon (default: runs as a standalone solver)')
+    '''
+
+    parser.add_argument('--data', nargs='*',
+                        help='Run as a solver process, passing in a JSON string of data')
+
+    args = parser.parse_args()
+    if args.data:
+        run_as_daemon(' '.join(args.data))
+    else:
+
+        run_tsp(9)
