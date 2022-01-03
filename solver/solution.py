@@ -17,7 +17,4 @@ class Solution:
             self.solution.append(self.problem.points[i])
 
     def add_iteration(self, path):
-        solution = []
-        for i in path:
-            solution.append(self.problem.points[i])
-        self.iterations.append(solution)
+        self.iterations.append(path)

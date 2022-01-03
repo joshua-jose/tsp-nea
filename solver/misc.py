@@ -60,6 +60,20 @@ def shortest_paths(paths, points):
     return best_paths, best_path
 
 
+@jit(nopython=True, fastmath=True)
+def shortest_paths_gen(paths, points):
+    n_nodes = len(points)
+    best_path = np.empty((n_nodes,), dtype=np.uint8)
+    best_score = math.inf
+
+    for path in paths:
+        score = score_path(path, points)
+        if score < best_score:
+            best_path = path
+            best_score = score
+            yield path
+
+
 def shortest_path(paths, points):
     n_nodes = len(points)
     best_path = np.empty((n_nodes,), dtype=np.uint8)

@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain, contextBridge } = require('electron')
 const path = require('path')
 const child_process = require('child_process');
+const readline = require('readline');
 
 try {
     require('electron-reloader')(module)
@@ -94,6 +95,7 @@ initWindowIPC();
 // TSP logic 
 
 let solverProcess = null;
+let rl = null;
 
 var runAlgo = false;
 let points = [];
@@ -112,6 +114,19 @@ tspStart: tells the backend to start a TSP calculation
 tspStop: tells the backend to stop TSP calc
 tspSetPath: gives the front end the next path to show
 */
+
+function spawnProcess() {
+    solverProcess = child_process.spawn('python', ['-u', '../solver/main.py', '--daemon']);
+
+    solverProcess.stderr.on('data', (msg) => {
+        console.log(msg.toString());
+    });
+    rl = readline.createInterface({
+        input: solverProcess.stdout,
+        terminal: false
+    });
+    return solverProcess, rl;
+}
 
 function initTSP() {
 
@@ -135,38 +150,37 @@ function initTSP() {
 
     // Reimplement this as a monolithic task with SIGINT interrupt
     // pass data through stdin/stdout
+    solverProcess, rl = spawnProcess();
+
     ipcMain.on('tspStart', (event, message) => {
-        runAlgo = true;
+        // probably not necessary
+        if (solverProcess.killed)
+            solverProcess = spawnProcess();
         points = message.points;
 
         var data = { 'points': points, 'algorithm': "Brute Force" };
-        solverProcess = child_process.spawn('python', ['-u', '../solver/main.py', '--data', JSON.stringify(data)]);
+        solverProcess.stdin.write(JSON.stringify(data) + '\r\n');
 
-        solverProcess.stdout.once('data', (msg) => {
-            ipcPostMessage('tspSetPath', { 'path': JSON.parse(msg).path });
-            ipcPostMessage('tspDone', {});
-            solverProcess.stdout.removeAllListeners();
-            solverProcess.stderr.removeAllListeners();
-            solverProcess.kill();
+        runAlgo = true;
+
+        rl.on('line', function (line) {
+            var parsed = JSON.parse(line);
+            ipcPostMessage('tspSetPath', { 'path': parsed.path });
+
+            if (parsed.final) {
+                ipcPostMessage('tspDone', {});
+                rl.removeListener('line', arguments.callee);
+                runAlgo = false;
+            }
         });
-
-        solverProcess.stderr.on('data', (msg) => {
-            console.log(msg.toString());
-        });
-
-        //testAlgo();
     });
 
     ipcMain.on('tspStop', (event, message) => {
-        runAlgo = false;
-
-        if (solverProcess !== null) {
-            solverProcess.stdout.removeAllListeners();
-            solverProcess.stderr.removeAllListeners();
+        if (runAlgo) {
             solverProcess.kill();
-            solverProcess = null;
+            solverProcess = spawnProcess();
         }
-
+        runAlgo = false;
     });
 }
 
