@@ -64,7 +64,7 @@ $('#generateButton').click(function () {
     runAlgo = false;
     window.tspAPI.tspStop();
 
-    chartPoints = generatePoints(8);
+    chartPoints = generatePoints(11);
     setChartPoints(chartPoints);
     setChartPath([]);
 });
@@ -74,6 +74,9 @@ $('#runButton').click(function () {
     if (!runAlgo) {
         UISetPlaying();
         runAlgo = true;
+
+        // temporary mask of brute force delay
+        setChartPath(generatePath(chartPoints.length));
 
         window.tspAPI.tspStart({ points: chartPoints });
     }

@@ -132,9 +132,9 @@ function initTSP() {
         ws.send('something');
     });
     */
-    // Add arguments for algorithm etc.
 
-
+    // Reimplement this as a monolithic task with SIGINT interrupt
+    // pass data through stdin/stdout
     ipcMain.on('tspStart', (event, message) => {
         runAlgo = true;
         points = message.points;

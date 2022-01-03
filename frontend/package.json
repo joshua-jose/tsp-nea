@@ -1,20 +1,17 @@
 {
-  "name": "tsp-nea",
-  "version": "0.1.0",
-  "description": "",
-  "main": "./app/main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "repository": "",
-  "author": "",
-  "license": "",
-  "devDependencies": {
-    "electron-reloader": "^1.2.1"
-  },
-  "dependencies": {
-    "custom-electron-titlebar": "^3.2.10",
-    "electron": "^16.0.2",
-    "ws": "^8.4.0"
-  }
+    "name": "tsp-nea",
+    "version": "0.1.0",
+    "description": "",
+    "main": "./app/main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "repository": "",
+    "author": "",
+    "license": "",
+    "devDependencies": {
+        "electron": "^16.0.2",
+        "electron-reloader": "^1.2.1"
+    },
+    "dependencies": {}
 }
