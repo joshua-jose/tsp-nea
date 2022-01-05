@@ -56,8 +56,8 @@ function shuffle(array) {
  * lock controls while spawning process
  */
 
-var chartPoints = [[0, 1], [1, 2], [3, 4], [5, 6]];
-var chartPath = [0, 1, 2, 3];
+var chartPoints = [];
+var chartPath = [];
 
 $('#generateButton').click(function () {
     UISetStop();
@@ -74,11 +74,14 @@ $('#runButton').click(function () {
     if (!runAlgo) {
         UISetPlaying();
         runAlgo = true;
+        var algorithm = $('#algorithmSelect').val();
 
         // temporary mask of brute force delay
-        setChartPath(generatePath(chartPoints.length));
+        if (algorithm === "Brute Force")
+            setChartPath(generatePath(chartPoints.length));
 
-        window.tspAPI.tspStart({ points: chartPoints });
+
+        window.tspAPI.tspStart({ points: chartPoints, algorithm: algorithm });
     }
     else {
         UISetStop();

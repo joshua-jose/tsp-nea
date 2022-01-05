@@ -28,7 +28,7 @@ def tsp_nearest_neighbour(problem):
         unused_nodes.remove(nearest_neighbour_index)
         path.append(nearest_neighbour_index)
         curr_node = problem.points[nearest_neighbour_index]
-        solution.add_iteration(path)
+        solution.add_iteration(path[:])
 
     solution.set_path(path)
     return solution

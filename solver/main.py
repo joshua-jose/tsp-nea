@@ -9,7 +9,6 @@ from held_karp import tsp_held_karp
 from problem import Problem
 import numpy as np
 import json
-import sys
 
 
 def send_path(path, final=False):
@@ -20,6 +19,13 @@ def send_path(path, final=False):
     print(json.dumps(message))
 
 
+algorithm_names = {
+    "Brute Force": tsp_brute_force,
+    "Held-Karp": tsp_held_karp,
+    "Nearest Neighbour": tsp_nearest_neighbour
+}
+
+
 def process_problem():
     data = json.loads(input())
 
@@ -27,15 +33,19 @@ def process_problem():
         return
 
     points = data["points"]
-    problem = Problem(len(points))
-    problem.points = np.array(points)
+    problem = Problem(np.array(points))
 
-    if data["algorithm"] == "Brute Force":
-        solution = tsp_brute_force(problem)
+    name = data["algorithm"]
+
+    if name in algorithm_names.keys():
+        algorithm = algorithm_names[name]
+        solution = algorithm(problem)
+    else:
+        return
 
     path = []
     for i in solution.iterations:
-        path = i.tolist()
+        path = i
         send_path(path)
 
     send_path(path, final=True)

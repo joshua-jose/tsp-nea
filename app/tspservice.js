@@ -24,6 +24,12 @@ function spawnProcess() {
         input: solverProcess.stdout,
         terminal: false
     });
+
+    solverProcess.on('exit', function () {
+        if (solverProcess === undefined || solverProcess === null)
+            return;
+        solverProcess.kill();
+    });
 }
 
 function init(iwin) {
@@ -50,12 +56,13 @@ function init(iwin) {
     spawnProcess();
 
     ipcMain.on('tspStart', (event, message) => {
-        // probably not necessary
+        // check if process is alive
         if (solverProcess === undefined || solverProcess === null || solverProcess.killed)
             spawnProcess();
 
-        processSendRequest(message.points, "Brute Force");
         running = true;
+        processSendRequest(message.points, message.algorithm);
+
 
         rl.on('line', function (line) {
             var parsed = JSON.parse(line);

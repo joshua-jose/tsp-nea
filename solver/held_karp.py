@@ -21,6 +21,7 @@ def tsp_held_karp(problem):
         paths.append(hk_shortest_path(problem, start, nodes-{start, c}, c))
 
     best_path = shortest_path(paths, problem.points)
+    solution.add_iteration(best_path)
     solution.set_path(best_path)
 
     return solution
