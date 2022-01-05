@@ -33,9 +33,9 @@ def process_problem():
         return
 
     points = data["points"]
-    problem = Problem(np.array(points))
-
     name = data["algorithm"]
+
+    problem = Problem(np.array(points))
 
     if name in algorithm_names.keys():
         algorithm = algorithm_names[name]

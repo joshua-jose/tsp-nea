@@ -25,6 +25,8 @@ function spawnProcess() {
         terminal: false
     });
 
+    rl.on('line', recievedMessage);
+
     solverProcess.on('exit', function () {
         if (solverProcess === undefined || solverProcess === null)
             return;
@@ -34,6 +36,23 @@ function spawnProcess() {
 
 function init(iwin) {
     win = iwin;
+
+    // use JSON RPC to pass data?
+    spawnProcess();
+
+    ipcMain.on('tspStart', (event, message) => {
+        running = true;
+        processSendRequest(message.points, message.algorithm);
+
+    });
+
+    ipcMain.on('tspStop', (event, message) => {
+        if (running) {
+            solverProcess.kill();
+            solverProcess = spawnProcess();
+        }
+        running = false;
+    });
     //var srv = net.createServer((sock) => { });
     //srv.listen(0, () => { });
     //srv.close();
@@ -52,40 +71,26 @@ function init(iwin) {
     });
     */
 
-    // use JSON RPC to pass data?
-    spawnProcess();
+}
 
-    ipcMain.on('tspStart', (event, message) => {
-        // check if process is alive
-        if (solverProcess === undefined || solverProcess === null || solverProcess.killed)
-            spawnProcess();
+function recievedMessage(line) {
+    if (!running)
+        return;
 
-        running = true;
-        processSendRequest(message.points, message.algorithm);
+    var parsed = JSON.parse(line);
+    ipcSetPath(parsed.path);
 
-
-        rl.on('line', function (line) {
-            var parsed = JSON.parse(line);
-            ipcSetPath(parsed.path);
-
-            if (parsed.final) {
-                ipcSendDone()
-                rl.removeListener('line', arguments.callee);
-                running = false;
-            }
-        });
-    });
-
-    ipcMain.on('tspStop', (event, message) => {
-        if (running) {
-            solverProcess.kill();
-            solverProcess = spawnProcess();
-        }
+    if (parsed.final) {
+        ipcSendDone();
         running = false;
-    });
+    }
 }
 
 function processSendRequest(points, algorithm) {
+    // check if process is alive
+    if (solverProcess === undefined || solverProcess === null || solverProcess.killed)
+        spawnProcess();
+
     var data = { 'points': points, 'algorithm': algorithm };
     solverProcess.stdin.write(JSON.stringify(data) + '\r\n');
 }
