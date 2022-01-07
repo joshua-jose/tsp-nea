@@ -107,7 +107,7 @@ async function init(iwin) {
     win = iwin;
 
     // create a new socket with a given identity
-    sock = new zmq.Dealer;
+    sock = new zmq.Dealer; // Async Requester
     sock.routingId = IDENTITY;
 
     await sock.bind("tcp://127.0.0.1:*"); // bind to random port
@@ -133,6 +133,13 @@ async function init(iwin) {
         if (running)
             sendStop();
         running = false;
+    });
+
+    ipcMain.on('tspRestart', (event, message) => {
+        if (running)
+            sendStop();
+        running = false;
+        solverProcess.kill();
     });
 }
 

@@ -7,7 +7,6 @@ import json
 import sys
 import zmq
 from zmq.asyncio import Context
-from aioconsole import ainput, aprint
 
 from brute import tsp_brute_force
 from nearest_neighbour import tsp_nearest_neighbour

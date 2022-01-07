@@ -1,3 +1,5 @@
+//import { setChartPoints, setChartPath } from './renderer.js';
+//import { UISetPlaying, UISetStop } from './ui.js';
 // --------------------------------------------------------------------------------------------------
 
 function rand(min, max) {
@@ -56,8 +58,12 @@ function shuffle(array) {
  * lock controls while spawning process
  */
 
-var chartPoints = [];
-var chartPath = [];
+let chartPoints = [];
+let chartPath = [];
+
+$('#repeatButton').click(function () {
+    window.tspAPI.tspRestart();
+});
 
 $('#generateButton').click(function () {
     UISetStop();
@@ -66,7 +72,7 @@ $('#generateButton').click(function () {
 
     chartPoints = generatePoints(11);
     setChartPoints(chartPoints);
-    setChartPath([]);
+    setChartPath([], chartPoints);
 });
 
 var runAlgo = false;
@@ -78,7 +84,7 @@ $('#runButton').click(function () {
 
         // temporary mask of brute force delay
         if (algorithm === "Brute Force")
-            setChartPath(generatePath(chartPoints.length));
+            setChartPath(generatePath(chartPoints.length), chartPoints);
 
 
         window.tspAPI.tspStart({ points: chartPoints, algorithm: algorithm });
@@ -91,7 +97,7 @@ $('#runButton').click(function () {
 });
 
 window.tspAPI.addEventListener('tspSetPath', message => {
-    setChartPath(message.path);
+    setChartPath(message.path, chartPoints);
 })
 
 window.tspAPI.addEventListener('tspDone', message => {
@@ -103,6 +109,6 @@ function logicMain() {
     var n = 8;
     chartPoints = generatePoints(n);
     setChartPoints(chartPoints);
-    setChartPath(generatePath(n));
+    setChartPath(generatePath(n), chartPoints);
 }
 $(document).ready(logicMain);

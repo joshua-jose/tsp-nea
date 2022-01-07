@@ -59,7 +59,7 @@ resize();
 
 // reposition the points
 function setChartPoints(points) {
-    data = [];
+    var data = [];
     points.forEach(point => {
         data.push({ x: point[0], y: point[1] })
     });
@@ -70,13 +70,14 @@ function setChartPoints(points) {
 }
 
 // Set up the lines to connect up the right points
-function setChartPath(path) {
-    data = [];
+function setChartPath(path, chartPoints) {
+    var data = [];
 
     path.forEach(index => {
         data.push({ x: chartPoints[index][0], y: chartPoints[index][1] })
     });
-    data.push({ x: chartPoints[path[0]][0], y: chartPoints[path[0]][1] }); // complete the loop
+    //if (path.length !== 0)
+    //    data.push({ x: chartPoints[path[0]][0], y: chartPoints[path[0]][1] }); // complete the loop
 
     myChart.data.datasets[1].data = data;
 
@@ -131,5 +132,10 @@ function rendererMain() {
         config
     );
 }
-
+/*
+module.exports = {
+    setChartPoints: setChartPoints,
+    setChartPath: setChartPath
+}
+*/
 rendererMain();

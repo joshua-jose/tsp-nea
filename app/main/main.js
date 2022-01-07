@@ -16,15 +16,15 @@ function createWindow() {
         height: 900,
         backgroundColor: '#343A40',
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            autoHideMenuBar: true
+            preload: path.join(__dirname, 'preload.js')
         },
         frame: false,
         show: false
     })
     //win.removeMenu();
     // and load the index.html of the app.
-    win.loadFile(path.join(__dirname, 'index.html'))
+    win.loadFile(path.join(__dirname, '../renderer/index.html'))
+    //win.loadFile(path.join(__dirname, 'index.html'))
 
     // Open the DevTools.
     // win.webContents.openDevTools()
@@ -47,10 +47,9 @@ app.whenReady().then(() => {
     win.on('unmaximize', sendMaximizeEvent);
 
     //win.once('ready-to-show', () => {
-    win.webContents.once('did-finish-load', function () {
-        win.show()
-    })
+    win.webContents.once('did-finish-load', () => win.show());
 
+    initWindowIPC();
     tspservice.init(win);
 })
 
@@ -81,4 +80,3 @@ function initWindowIPC() {
 function sendMaximizeEvent() {
     win.webContents.send('maximizeEvent', { 'isMaximized': win.isMaximized() });
 }
-initWindowIPC();
