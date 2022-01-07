@@ -5,7 +5,7 @@ from solution import Solution
 from misc import shortest_paths, shortest_paths_gen, permutations
 
 
-def tsp_brute_force(problem):
+async def tsp_brute_force(problem):
     solution = Solution(problem)
     paths = permutations(problem.size)
 

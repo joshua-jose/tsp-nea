@@ -1,10 +1,13 @@
 const child_process = require('child_process');
 const readline = require('readline');
 const { ipcMain } = require('electron');
+const zmq = require("zeromq");
 
 let solverProcess = null;
 let rl = null;
 let win = null;
+let sock = null;
+let endpoint = null;
 
 var running = false;
 
@@ -15,7 +18,7 @@ tspSetPath: gives the front end the next path to show
 */
 
 function spawnProcess() {
-    solverProcess = child_process.spawn('.venv/Scripts/python', ['-u', 'solver/main.py', '--daemon']);
+    solverProcess = child_process.spawn('.venv/Scripts/python', ['-u', 'solver/main.py', '--daemon', endpoint]);
 
     solverProcess.stderr.on('data', (msg) => {
         console.log(msg.toString());
@@ -34,11 +37,26 @@ function spawnProcess() {
     });
 }
 
-function init(iwin) {
+
+const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function zmq_listen() {
+
+    while (true) {
+        const [msg] = await sock.receive();
+        recievedMessage(msg);
+    }
+}
+
+async function init(iwin) {
     win = iwin;
 
-    // use JSON RPC to pass data?
+    sock = new zmq.Request
+    await sock.bind("tcp://127.0.0.1:*");
+    endpoint = sock.lastEndpoint;
+
     spawnProcess();
+    zmq_listen();
 
     ipcMain.on('tspStart', (event, message) => {
         running = true;
@@ -53,24 +71,6 @@ function init(iwin) {
         }
         running = false;
     });
-    //var srv = net.createServer((sock) => { });
-    //srv.listen(0, () => { });
-    //srv.close();
-    //var port = srv.address().port;
-    /*
-    var port = 2445;
-    const wss = new WebSocket.Server({ port: port })
-
-    wss.on('connection', function connection(ws) {
-        ws.send('first');
-        ws.on('message', function message(data) {
-            console.log('node received: %s', data);
-        });
-
-        ws.send('something');
-    });
-    */
-
 }
 
 function recievedMessage(line) {
@@ -86,12 +86,13 @@ function recievedMessage(line) {
     }
 }
 
-function processSendRequest(points, algorithm) {
+async function processSendRequest(points, algorithm) {
     // check if process is alive
     if (solverProcess === undefined || solverProcess === null || solverProcess.killed)
         spawnProcess();
 
     var data = { 'points': points, 'algorithm': algorithm };
+    await sock.send(JSON.stringify(data));
     solverProcess.stdin.write(JSON.stringify(data) + '\r\n');
 }
 

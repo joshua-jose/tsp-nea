@@ -4,8 +4,15 @@ from solution import Solution
 from misc import point_dist_sq
 
 
-def tsp_nearest_neighbour(problem):
+async def tsp_nearest_neighbour(problem):
     solution = Solution(problem)
+    
+    solution.iterations = nearest_neighbour_gen(problem)
+
+    return solution
+
+
+def nearest_neighbour_gen(problem):
     start = problem.start_index
 
     path = [start]
@@ -28,7 +35,5 @@ def tsp_nearest_neighbour(problem):
         unused_nodes.remove(nearest_neighbour_index)
         path.append(nearest_neighbour_index)
         curr_node = problem.points[nearest_neighbour_index]
-        solution.add_iteration(path[:])
 
-    solution.set_path(path)
-    return solution
+        yield path[:]

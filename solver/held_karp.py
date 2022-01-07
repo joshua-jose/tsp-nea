@@ -1,10 +1,11 @@
+import asyncio
 from functools import cache
 
 from solution import Solution
 from misc import shortest_path
 
 
-def tsp_held_karp(problem):
+async def tsp_held_karp(problem):
     # TODO: work from a distance matrix rather than assuming 2D nodes
 
     hk_shortest_path.cache_clear()  # dont need solutions from previous run
@@ -19,6 +20,7 @@ def tsp_held_karp(problem):
     paths = []
     for c in nodes - {start}:
         paths.append(hk_shortest_path(problem, start, nodes-{start, c}, c))
+        await asyncio.sleep(0)
 
     best_path = shortest_path(paths, problem.points)
     solution.add_iteration(best_path)

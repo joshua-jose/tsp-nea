@@ -13,5 +13,7 @@
         "electron": "^16.0.2",
         "electron-reloader": "^1.2.1"
     },
-    "dependencies": {}
+    "dependencies": {
+        "zeromq": "^6.0.0-beta.6"
+    }
 }

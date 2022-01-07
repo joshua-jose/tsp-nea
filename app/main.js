@@ -62,18 +62,10 @@ app.on('window-all-closed', function () {
 })
 
 function initWindowIPC() {
-    ipcMain.on('windowClose', (event, message) => {
-        win.close();
-    });
-    ipcMain.on('windowMinimize', (event, message) => {
-        win.minimize();
-    });
-    ipcMain.on('windowUnmaximize', (event, message) => {
-        win.unmaximize();
-    });
-    ipcMain.on('windowMaximize', (event, message) => {
-        win.maximize();
-    });
+    ipcMain.on('windowClose', (event, message) => win.close());
+    ipcMain.on('windowMinimize', (event, message) => win.minimize());
+    ipcMain.on('windowUnmaximize', (event, message) => win.unmaximize());
+    ipcMain.on('windowMaximize', (event, message) => win.maximize());
 
     ipcMain.on('isMaximized', (event, arg) => {
         event.returnValue = win.isMaximized()
