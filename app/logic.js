@@ -100,7 +100,9 @@ window.tspAPI.addEventListener('tspDone', message => {
 })
 
 function logicMain() {
-    chartPoints = generatePoints(8);
+    var n = 8;
+    chartPoints = generatePoints(n);
     setChartPoints(chartPoints);
+    setChartPath(generatePath(n));
 }
 $(document).ready(logicMain);

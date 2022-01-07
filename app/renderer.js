@@ -64,9 +64,8 @@ function setChartPoints(points) {
         data.push({ x: point[0], y: point[1] })
     });
 
-    myChart.data.datasets.forEach(dataset => {
-        dataset.data = [...data];
-    });
+    myChart.data.datasets[0].data = data;
+    myChart.data.datasets[1].data = [];
     myChart.update();
 }
 
@@ -77,6 +76,7 @@ function setChartPath(path) {
     path.forEach(index => {
         data.push({ x: chartPoints[index][0], y: chartPoints[index][1] })
     });
+    data.push({ x: chartPoints[path[0]][0], y: chartPoints[path[0]][1] }); // complete the loop
 
     myChart.data.datasets[1].data = data;
 

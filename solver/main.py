@@ -15,12 +15,7 @@ from held_karp import tsp_held_karp
 from problem import Problem
 
 
-async def send_path(path, final=False):
-    if isinstance(path, np.ndarray):
-        path = path.tolist()
-
-    message = {'path': path, 'final': final}
-    await aprint(json.dumps(message))
+FRONTEND_IDENTITY = b"FRONTEND"
 
 
 algorithm_names = {
@@ -30,7 +25,60 @@ algorithm_names = {
 }
 
 
-async def process_problem(data):
+class BrowserIPC:
+    def __init__(self, endpoint):
+        self.context = Context()
+        self.socket = self.context.socket(zmq.ROUTER)
+        self.socket.connect(endpoint)
+
+    # Performs initial handshake
+    async def init(self, algorithms):
+        # get ready packet
+        packet = await recv_packet(self.socket)
+        assert packet['type'] == "ready"
+
+        # send list of algorithms
+        await send_algorithms(self.socket, algorithms)
+
+    async def send_path(self, path, final=False):
+        pass
+
+    async def send_algorithms(self, algorithms):
+        pass
+
+    async def recv_packet(self):
+        pass
+
+    async def send_packet(self, packet):
+        pass
+
+
+async def send_path(socket, path, final=False):
+    if isinstance(path, np.ndarray):
+        path = path.tolist()
+
+    packet = {'type': 'path', 'path': path, 'final': final}
+
+    await send_packet(socket, packet)
+
+
+async def send_algorithms(socket, algorithms):
+    await send_packet(socket, {'type': 'algorithms', 'algorithms': algorithms})
+
+
+async def recv_packet(socket):
+    # dealer sends ID alongside message
+    (_, message) = await socket.recv_multipart()
+    message = message.decode()
+    return json.loads(message)
+
+
+async def send_packet(socket, packet):
+    bin_data = json.dumps(packet).encode()
+    await socket.send_multipart([FRONTEND_IDENTITY, bin_data])
+
+
+async def process_problem(data, socket):
 
     if not('points' in data.keys() and 'algorithm' or data.keys()):
         return
@@ -49,55 +97,41 @@ async def process_problem(data):
     path = []
     for i in solution.iterations:
         path = i
-        await send_path(path)
+        await send_path(socket, path)
         await asyncio.sleep(0.5)
 
-    await send_path(path, final=True)
+    await send_path(socket, path, final=True)
 
-    '''
-    for i in solution.iteration_paths:
-        message = {'path': i.tolist(), 'final': False}
-        # time.sleep(0.75)
-        print(json.dumps(message))
-    
-    message = {'path': solution.path.tolist(), 'final': True}
-    print(json.dumps(message))
-    '''
-
-async def run_server(endpoint):
-    context = Context()
-    socket = context.socket(zmq.REP)
-    socket.connect(endpoint)
-    while True:
-        message = await socket.recv()
-        data = json.loads(message)
-
-        print(f"zmq received: {message}", file=sys.stderr)
-        #await socket.send_json({'test':'test'})
-        await asyncio.sleep(0)
 
 async def run_as_daemon(endpoint):
-    asyncio.create_task(run_server(endpoint))
+    context = Context()
+    socket = context.socket(zmq.ROUTER)
+    socket.connect(endpoint)
 
+    # get ready packet
+    packet = await recv_packet(socket)
+    assert packet['type'] == "ready"
+
+    # send list of algorithms
+    await send_algorithms(socket, list(algorithm_names.keys()))
+
+    # Main loop
+    task = None
     while True:
-        data = json.loads(await ainput())
+        packet = await recv_packet(socket)
+        #print(f"py received: {json.dumps(packet)}", file=sys.stderr)
 
-        await process_problem(data)
+        if packet['type'] == "calculate":
+            task = asyncio.create_task(process_problem(packet, socket))
+
+        elif packet['type'] == "stop":
+            if task is not None:
+                task.cancel()
+
+            task = None
+
         await asyncio.sleep(0)
-        #nn_solution = tsp_nearest_neighbour(problem)
-        #hk_solution = tsp_held_karp(problem)
 
-        # asyncio.run(client(port))
-
-
-'''
-async def client(port):
-    async with websockets.connect("ws://localhost:"+str(port)) as websocket:
-        await websocket.send("Hello world!")
-        while True:
-            r = await websocket.recv()
-            print("Python recieved: ", r)
-'''
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -109,22 +143,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.daemon:
         if isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsProactorEventLoopPolicy):
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+            asyncio.set_event_loop_policy(
+                asyncio.WindowsSelectorEventLoopPolicy())
         asyncio.run(run_as_daemon(args.daemon))
     else:
 
         run_tsp(9)
-
-    '''
-    parser.add_argument('--data', nargs='*',
-                        help='Run as a solver process, passing in a JSON string of data')
-
-    
-
-    args = parser.parse_args()
-    if args.data:
-        run_as_daemon(' '.join(args.data))
-    else:
-
-        run_tsp(9)
-    '''
