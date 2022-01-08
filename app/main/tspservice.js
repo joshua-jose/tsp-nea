@@ -18,6 +18,8 @@ tspStop: tells the backend to stop TSP calc
 tspSetPath: gives the front end the next path to show
 */
 
+// Hot reload on file change
+
 function spawnProcess() {
     solverProcess = child_process.spawn('.venv/Scripts/python', ['-u', 'solver/main.py', '--daemon', endpoint]);
 

@@ -15,8 +15,12 @@ module.exports = [
         entry: ['./app/main/main.js'],
         target: 'electron-main',
 
+
         externals: {
             zeromq: 'commonjs2 zeromq'
+        },
+        externalsPresets: {
+            node: true // in order to ignore built-in modules like path, fs, etc. 
         },
 
         module: {
@@ -27,7 +31,7 @@ module.exports = [
             }]
         },
         output: {
-            path: __dirname + '/dist',
+            path: __dirname + '/dist/main',
             filename: 'main.bundle.js'
         },
         plugins: [
@@ -65,7 +69,7 @@ module.exports = [
                 }]
         },
         output: {
-            path: __dirname + '/dist',
+            path: __dirname + '/dist/renderer',
             filename: 'renderer.bundle.js'
         },
         plugins: [
