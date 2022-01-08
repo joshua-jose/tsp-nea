@@ -1,52 +1,9 @@
 // webpack.config.js
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require("path");
-const { IgnorePlugin } = require('webpack');
 
-//const glob = require("glob");
-
-const optionalPlugins = [];
-if (process.platform !== "darwin")
-    optionalPlugins.push(new IgnorePlugin({ resourceRegExp: /^fsevents$/ }));
-
+// packs renderer code alongside resources 
 module.exports = [
-    {
-        mode: 'development',
-        entry: ['./app/main/main.js'],
-        target: 'electron-main',
-
-
-        externals: {
-            zeromq: 'commonjs2 zeromq'
-        },
-        externalsPresets: {
-            node: true // in order to ignore built-in modules like path, fs, etc. 
-        },
-
-        module: {
-            rules: [{
-                test: /\.ts$/,
-                include: path.join(__dirname, 'app/main/'),
-                use: [{ loader: 'ts-loader' }]
-            }]
-        },
-        output: {
-            path: __dirname + '/dist/main',
-            filename: 'main.bundle.js'
-        },
-        plugins: [
-            ...optionalPlugins,
-        ],
-    },
-    {
-        mode: 'development',
-        entry: './app/main/preload.js',
-        target: 'electron-preload',
-        output: {
-            path: path.join(__dirname, 'dist'),
-            filename: 'preload.js'
-        }
-    },
     {
         mode: 'development',
         entry: ['./app/renderer/index.js'], // glob.sync("./app/renderer/*.js")
@@ -66,11 +23,15 @@ module.exports = [
                 {
                     test: /\.css$/,
                     use: ['style-loader', 'css-loader']
-                }]
+                }
+            ]
         },
         output: {
             path: __dirname + '/dist/renderer',
             filename: 'renderer.bundle.js'
+        },
+        cache: {
+            type: 'filesystem'
         },
         plugins: [
             new HtmlWebpackPlugin({

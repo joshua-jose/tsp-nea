@@ -4,7 +4,7 @@ const path = require('path');
 const tspservice = require('./tspservice');
 
 try {
-    require('electron-reloader')(module)
+    require('electron-reloader')(module, { ignore: 'app/main' })
 } catch (_) { }
 
 let win = null;

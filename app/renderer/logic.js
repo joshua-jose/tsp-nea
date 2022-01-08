@@ -1,5 +1,5 @@
-//import { setChartPoints, setChartPath } from './renderer.js';
-//import { UISetPlaying, UISetStop } from './ui.js';
+import { setChartPoints, setChartPath } from './renderer.js';
+import { UISetPlaying, UISetStop } from './ui.js';
 // --------------------------------------------------------------------------------------------------
 
 function rand(min, max) {

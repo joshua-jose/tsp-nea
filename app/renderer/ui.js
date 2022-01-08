@@ -31,7 +31,7 @@ function setSidebarOffset(scale) {
     $('#title-text-box').css('height', offset - padding);
 }
 
-function UISetPlaying() {
+export function UISetPlaying() {
     var runIcon = $('#runButton > i');
     var spinner = $('#repeatButton > .spinner-border');
     var repeatIcon = $('#repeatButton > i');
@@ -43,7 +43,7 @@ function UISetPlaying() {
     spinner.css('display', 'block');
 }
 
-function UISetStop() {
+export function UISetStop() {
     var runIcon = $('#runButton > i');
     var spinner = $('#repeatButton > .spinner-border');
     var repeatIcon = $('#repeatButton > i');

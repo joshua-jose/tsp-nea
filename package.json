@@ -5,21 +5,24 @@
     "private": true,
     "main": "./app/main/main.js",
     "scripts": {
-        "build": "webpack --config ./webpack.config.js",
-        "wstart": "npm run build && electron ./dist/main.bundle.js",
-        "start": "electron ."
+        "build": "gulp",
+        "sstart": "electron .",
+        "start": "gulp && concurrently \"webpack --watch \" \"gulp watch\" \"electron ./dist/main/main.js\" ",
+        "dist": "electron-builder"
     },
     "repository": "",
     "author": "",
     "license": "",
     "devDependencies": {
-        "copy-webpack-plugin": "^9.1.0",
+        "concurrently": "^7.0.0",
         "css-loader": "^6.5.1",
+        "del": "^6.0.0",
         "electron": "^16.0.2",
+        "electron-builder": "^22.14.5",
         "electron-reloader": "^1.2.1",
-        "glob": "^7.2.0",
+        "gulp": "^4.0.2",
+        "gulp-typescript": "^6.0.0-alpha.1",
         "html-webpack-plugin": "^5.5.0",
-        "script-loader": "^0.7.2",
         "style-loader": "^3.3.1",
         "ts-loader": "^9.2.6",
         "webpack": "^5.65.0",
@@ -27,5 +30,17 @@
     },
     "dependencies": {
         "zeromq": "^6.0.0-beta.6"
+    },
+    "overrides": {
+        "glob-parent": ">5.1.2"
+    },
+    "build": {
+        "appId": "com.JoshuaJose.tspNea",
+        "win": {
+            "target": "NSIS"
+        },
+        "directories": {
+            "output": "build"
+        }
     }
 }

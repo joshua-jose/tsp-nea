@@ -120,7 +120,7 @@ async function init(iwin) {
     // Initiate connection with a dummy packet
     await sendReady();
     // Wait for reply with a list of algorithms
-    packet = await recvPacket();
+    var packet = await recvPacket();
     console.log(packet.algorithms);
 
     solverListen();
