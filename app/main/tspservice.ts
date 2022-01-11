@@ -20,22 +20,29 @@ tspSetPath: gives the front end the next path to show
 
 // Hot reload on file change
 
-function spawnProcess() {
+
+async function spawnProcess() {
+
     solverProcess = child_process.spawn('.venv/Scripts/python', ['-u', 'solver/main.py', '--daemon', endpoint]);
 
     solverProcess.stderr.on('data', (msg) => console.log(msg.toString()));
     solverProcess.stdout.on('data', (msg) => console.log(msg.toString()));
 
+    // Initiate connection with a dummy packet
+    await sendReady();
+    console.log("ready");
+    // Wait for reply with a list of algorithms
+    //var algopacket = await recvPacket();
+
     // On exit, make sure the old process is definitely dead, then attempt a restart
-    solverProcess.on('exit', function () {
-        if (solverProcess === undefined || solverProcess === null)
-            return;
-        solverProcess.kill();
+    solverProcess.on('exit', async function () {
+        if (!(solverProcess === undefined || solverProcess === null))
+            solverProcess.kill();
+
         spawnProcess();
     });
 }
-
-const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
+//const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 // ------------------------- ZMQ -------------------------
 // sending data to the python solver 
@@ -71,16 +78,18 @@ async function sendCalculate(points, algorithm) {
 }
 
 function receivedPacket(packet) {
-    if (!running)
-        return;
-
     if (packet.type === "path") {
+        if (!running)
+            return;
         ipcSetPath(packet.path);
 
         if (packet.final) {
             ipcSendDone();
             running = false;
         }
+    }
+    else if (packet.type === "algorithms") {
+        console.log("Algorithms sent: " + JSON.stringify(packet));
     }
 }
 
@@ -115,15 +124,9 @@ async function init(iwin) {
     await sock.bind("tcp://127.0.0.1:*"); // bind to random port
     endpoint = sock.lastEndpoint; // get address with port
 
-    spawnProcess();
-
-    // Initiate connection with a dummy packet
-    await sendReady();
-    // Wait for reply with a list of algorithms
-    var packet = await recvPacket();
-    console.log(packet.algorithms);
-
     solverListen();
+    await spawnProcess();
+
 
     // messages from browser
     ipcMain.on('tspStart', (event, message) => {

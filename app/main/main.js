@@ -21,7 +21,7 @@ function createWindow() {
         frame: false,
         show: false
     })
-    //win.removeMenu();
+
     // and load the index.html of the app.
     win.loadFile(path.join(__dirname, '../renderer/index.html'))
     //win.loadFile(path.join(__dirname, 'index.html'))
@@ -43,11 +43,17 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 
+    win.on('closed', function () {
+        win = null;
+        app.exit(0); // make sure it properly quits, killing async tasks too
+    });
+
     win.on('maximize', sendMaximizeEvent);
     win.on('unmaximize', sendMaximizeEvent);
 
     //win.once('ready-to-show', () => {
     win.webContents.once('did-finish-load', () => win.show());
+    setTimeout(() => win.show(), 2000);
 
     initWindowIPC();
     tspservice.init(win);

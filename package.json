@@ -3,12 +3,12 @@
     "version": "0.1.0",
     "description": "",
     "private": true,
-    "main": "./app/main/main.js",
+    "main": "./dist/main/main.js",
     "scripts": {
         "build": "gulp",
         "sstart": "electron .",
         "start": "gulp && concurrently \"webpack --watch \" \"gulp watch\" \"electron ./dist/main/main.js\" ",
-        "dist": "electron-builder"
+        "pack": "gulp && electron-builder"
     },
     "repository": "",
     "author": "",
@@ -26,7 +26,8 @@
         "style-loader": "^3.3.1",
         "ts-loader": "^9.2.6",
         "webpack": "^5.65.0",
-        "webpack-cli": "^4.9.1"
+        "webpack-cli": "^4.9.1",
+        "ts-node": "^10.4.0"
     },
     "dependencies": {
         "zeromq": "^6.0.0-beta.6"
@@ -39,6 +40,11 @@
         "win": {
             "target": "NSIS"
         },
+        "files": [
+            "dist",
+            "node_modules",
+            "package.json"
+        ],
         "directories": {
             "output": "build"
         }

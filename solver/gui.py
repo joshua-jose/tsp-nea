@@ -30,10 +30,11 @@ class GUI:
         edgesy = []
 
         for i in solution.solution:
-            edgesx.append(i[0])
-            edgesy.append(i[1])
-        edgesx.append(solution.solution[0][0])
-        edgesy.append(solution.solution[0][1])
+            node = solution.problem.points[i]
+            edgesx.append(node[0])
+            edgesy.append(node[1])
+        # edgesx.append(solution.solution[0][0])
+        # edgesy.append(solution.solution[0][1])
 
         line.set_xdata(edgesx)
         line.set_ydata(edgesy)
@@ -55,8 +56,9 @@ class GUI:
             edgesy = []
 
             for i in sol:
-                edgesx.append(i[0])
-                edgesy.append(i[1])
+                node = solution.problem.points[i]
+                edgesx.append(node[0])
+                edgesy.append(node[1])
 
             line.set_xdata(edgesx)
             line.set_ydata(edgesy)

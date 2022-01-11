@@ -33,7 +33,7 @@ function tsMain(cb) {
         .pipe(ts({
             module: "commonjs",
             removeComments: true,
-            isolatedModules: true
+            isolatedModules: true,
 
         }))
         .pipe(dest('dist/main/'));
