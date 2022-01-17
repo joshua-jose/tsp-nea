@@ -133,3 +133,6 @@ dmypy.json
 
 # ---  Node ---
 node_modules
+
+# Webpack build files
+.webpack

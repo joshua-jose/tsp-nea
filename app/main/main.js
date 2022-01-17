@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const tspservice = require('./tspservice');
+const tspservice = require('./tspservice.ts');
 
 try {
     require('electron-reloader')(module, { ignore: 'app/main' })
@@ -16,15 +16,16 @@ function createWindow() {
         height: 900,
         backgroundColor: '#343A40',
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
+            preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
         },
         frame: false,
         show: false
     })
 
     // and load the index.html of the app.
-    win.loadFile(path.join(__dirname, '../renderer/index.html'))
+    //win.loadFile(path.join(__dirname, '../renderer/index.html'))
     //win.loadFile(path.join(__dirname, 'index.html'))
+    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
     // win.webContents.openDevTools()
