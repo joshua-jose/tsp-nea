@@ -97,7 +97,8 @@ function rendererMain() {
             borderColor: 'rgb(54, 162, 235)',
             type: "line",
             pointRadius: 0,
-            data: []
+            data: [],
+            tension: 0.03
         }],
     };
 

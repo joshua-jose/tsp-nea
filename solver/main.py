@@ -6,13 +6,16 @@ import sys
 from brute import tsp_brute_force
 from nearest_neighbour import tsp_nearest_neighbour
 from held_karp import tsp_held_karp
+from convex_hull import tsp_convex_hull
+
 from problem import Problem
 from BrowserIPC import BrowserIPC
 
 algorithm_names = {
     "Brute Force": tsp_brute_force,
     "Held-Karp": tsp_held_karp,
-    "Nearest Neighbour": tsp_nearest_neighbour
+    "Nearest Neighbour": tsp_nearest_neighbour,
+    "Convex Hull": tsp_convex_hull
 }
 
 
