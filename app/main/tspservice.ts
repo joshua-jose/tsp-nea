@@ -9,6 +9,7 @@ let solverProcess = null;
 let win = null;
 let sock = null;
 let endpoint = null;
+let algorithms: Array<String> = [];
 
 var running = false;
 
@@ -90,6 +91,8 @@ function receivedPacket(packet) {
     }
     else if (packet.type === "algorithms") {
         console.log("Algorithms sent: " + JSON.stringify(packet));
+        algorithms = packet.algorithms;
+        ipcSendAlgorithms(algorithms);
     }
 }
 
@@ -102,6 +105,10 @@ function ipcSetPath(path) {
 
 function ipcSendDone() {
     ipcPostMessage('tspDone', {});
+}
+
+function ipcSendAlgorithms(ialgorithms: Array<String>) {
+    ipcPostMessage('tspAlgorithms', { 'algorithms': ialgorithms });
 }
 
 // Send a message to the renderer process
@@ -146,6 +153,10 @@ async function init(iwin) {
         running = false;
         solverProcess.kill();
     });
+
+    ipcMain.on('tspGetAlgorithms', (event, arg) => {
+        event.returnValue = algorithms;
+    })
 }
 
 module.exports = {

@@ -13,7 +13,7 @@ async def tsp_convex_hull(problem):
 
 
 def counter_clockwise(p, q, r):
-    return (q[0] - p[0]) * (r[1] - q[1]) < (q[1] - p[1]) * (r[0] - q[0])
+    return ((q[0] - p[0]) * (r[1] - q[1])) < ((q[1] - p[1]) * (r[0] - q[0]))
 
 
 def convex_hull_gen(problem):
@@ -27,11 +27,11 @@ def convex_hull_gen(problem):
 
     while True:
         current = path[-1]
-        selected = 0
+        selected = None
 
         # find the "most counterclockwise" point
         for node in nodes:
-            if selected == 0 or counter_clockwise(problem.points[current], problem.points[node], problem.points[selected]):
+            if selected is None or counter_clockwise(problem.points[current], problem.points[node], problem.points[selected]):
                 # this point is counterclockwise with respect to the current hull
                 # and selected point (e.g. more counterclockwise)
                 selected = node

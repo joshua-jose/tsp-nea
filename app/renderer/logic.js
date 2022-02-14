@@ -105,10 +105,28 @@ window.tspAPI.addEventListener('tspDone', message => {
     runAlgo = false;
 })
 
+window.tspAPI.addEventListener('tspAlgorithms', message => {
+    console.log(message.algorithms);
+    updateAlgorithms(message.algorithms);
+    //UISetStop();
+    //runAlgo = false;
+})
+
+function updateAlgorithms(algorithms) {
+    var selectBox = $('#algorithmSelect');
+    selectBox.empty();
+    console.log(algorithms);
+    algorithms.forEach(name =>
+        selectBox.append(new Option(name))
+    );
+}
+
 function logicMain() {
     var n = 8;
     chartPoints = generatePoints(n);
     setChartPoints(chartPoints);
     setChartPath(generatePath(n), chartPoints);
+    //updateAlgorithms(tspAPI.tspGetAlgorithms());
+
 }
 $(document).ready(logicMain);

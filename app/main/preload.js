@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('tspAPI', {
     tspStart: (message) => ipcRenderer.send('tspStart', message),
     tspStop: () => ipcRenderer.send('tspStop', {}),
     tspRestart: () => ipcRenderer.send('tspRestart', {}),
+    tspGetAlgorithms: () => { return ipcRenderer.sendSync('tspGetAlgorithms'); },
 
     addEventListener: (eventName, cb) => {
         ipcRenderer.on('ipcReturn', function (event, message) {
