@@ -138,6 +138,7 @@ async function init(iwin) {
     // messages from browser
     ipcMain.on('tspStart', (event, message) => {
         running = true;
+        console.log(message.points, message.algorithm);
         sendCalculate(message.points, message.algorithm);
 
     });

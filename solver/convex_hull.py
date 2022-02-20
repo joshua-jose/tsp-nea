@@ -34,6 +34,8 @@ def convex_hull_gen(problem):
             if selected is None or counter_clockwise(problem.points[current], problem.points[node], problem.points[selected]):
                 # this point is counterclockwise with respect to the current hull
                 # and selected point (e.g. more counterclockwise)
+                if node == leftmost and len(path) == 1:
+                    continue
                 selected = node
 
         # adding this to the hull so it's no longer available
@@ -44,6 +46,7 @@ def convex_hull_gen(problem):
             break
 
         path.append(selected)  # add to hull
+
         yield path
     # Hull is built, now use an insertion algorithm to add rest of points to path
     while len(nodes) > 0:

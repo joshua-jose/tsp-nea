@@ -57,6 +57,12 @@ draw();
 resize();
 */
 
+export function getChartCoordinates(offsetX, offsetY) {
+    let x = myChart.scales['x'].getValueForPixel(offsetX);
+    let y = myChart.scales['y'].getValueForPixel(offsetY);
+    return [x, y];
+}
+
 // reposition the points
 export function setChartPoints(points) {
     var data = [];

@@ -28,13 +28,13 @@ async def process_problem(data, IPC):
     name = data["algorithm"]
 
     problem = Problem(np.array(points))
+    print(points, name)
 
     if name in algorithm_names.keys():
         algorithm = algorithm_names[name]
         solution = await algorithm(problem)
     else:
         return
-
     path = []
     for i in solution.iterations:
         path = i
@@ -52,7 +52,6 @@ async def run_as_daemon(endpoint):
     task = None
     while True:
         packet = await IPC.recv_packet()
-
         if packet['type'] == "calculate":
             task = asyncio.create_task(process_problem(packet, IPC))
 

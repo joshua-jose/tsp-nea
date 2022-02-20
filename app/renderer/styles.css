@@ -63,6 +63,10 @@ body {
     font-size: 1.5rem;
 }
 
+#randomPointsSlider .slider-handle {
+	background: var(--bs-primary);
+}
+
 /* --------------------------- Canvas --------------------------- */
 
 #view-canvas{

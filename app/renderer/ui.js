@@ -83,6 +83,7 @@ window.electron.addMaxEventListener(function (isMaximized) {
         $('body').removeClass('maximized');
     }
 })
+
 /*
 module.exports = {
     barResize: barResize,

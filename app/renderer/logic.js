@@ -1,4 +1,4 @@
-import { setChartPoints, setChartPath } from './renderer.js';
+import { setChartPoints, setChartPath, getChartCoordinates } from './renderer.js';
 import { UISetPlaying, UISetStop } from './ui.js';
 // --------------------------------------------------------------------------------------------------
 
@@ -58,8 +58,19 @@ function shuffle(array) {
  * lock controls while spawning process
  */
 
+let placeIconOffClass = 'bi-cursor';
+let placeIconOnClass = 'bi-cursor-fill';
+
 let chartPoints = [];
 let chartPath = [];
+let numberRandom = 8;
+let placingPoints = false;
+
+let rpSlider = $("#randomPoints").slider({});
+rpSlider.on("slide", function (sliderValue) {
+    //document.getElementById("ex6SliderVal").textContent = sliderValue;
+    numberRandom = sliderValue.value;
+});
 
 $('#repeatButton').click(function () {
     window.tspAPI.tspRestart();
@@ -70,9 +81,40 @@ $('#generateButton').click(function () {
     runAlgo = false;
     window.tspAPI.tspStop();
 
-    chartPoints = generatePoints(11);
+    chartPoints = generatePoints(numberRandom);
     setChartPoints(chartPoints);
     setChartPath([], chartPoints);
+});
+
+$('#placePointsButton').click(function () {
+    placingPoints = !placingPoints;
+
+    let placeIcon = $('#placePointsButton > i');
+
+    if (placingPoints) {
+        placeIcon.removeClass(placeIconOffClass);
+        placeIcon.addClass(placeIconOnClass);
+    }
+    else {
+        placeIcon.removeClass(placeIconOnClass);
+        placeIcon.addClass(placeIconOffClass);
+    }
+});
+
+$('#clearPointsButton').click(function () {
+    chartPoints = [];
+    setChartPoints(chartPoints);
+});
+
+$('#view-canvas').mousedown(function (evt) {
+    //console.log(evt.offsetX + "," + evt.offsetY);
+    let [x, y] = getChartCoordinates(evt.offsetX, evt.offsetY);
+
+    if (placingPoints) {
+        chartPoints.push([x, y]);
+        setChartPoints(chartPoints);
+    }
+    //setChartPath(generatePath(chartPoints.length), chartPoints);
 });
 
 var runAlgo = false;
