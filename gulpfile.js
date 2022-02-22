@@ -14,7 +14,7 @@ function renderer(cb) {
                 return reject(err)
             }
             if (stats.hasErrors()) {
-                return reject(new Error(stats.compilation.errors.join('\n')))
+                return reject(new Error(stats.stats[0].compilation.errors.join('\n')))
             }
             resolve()
         })

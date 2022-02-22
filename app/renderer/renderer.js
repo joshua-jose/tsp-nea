@@ -1,3 +1,5 @@
+import { Queue } from './queue.js';
+
 var viewport = document.getElementById('viewport');
 var canvas = document.getElementById('view-canvas');
 var ctx = canvas.getContext('2d');
@@ -119,12 +121,16 @@ function rendererMain() {
                     position: 'bottom',
                     grid: {
                         display: false
-                    }
+                    },
+                    min: 0,
+                    max: 1
                 },
                 y: {
                     grid: {
                         display: false
-                    }
+                    },
+                    min: 0,
+                    max: 1
                 }
             },
             plugins: {

@@ -9,12 +9,25 @@ module.exports = [
         entry: ['./app/renderer/index.js'], // glob.sync("./app/renderer/*.js")
         target: 'electron-renderer',
         devtool: 'source-map',
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
+        },
         module: {
             rules: [
                 {
+                    /*
                     test: /\.ts(x?)$/,
                     include: path.join(__dirname, 'app/renderer/'),
-                    use: [{ loader: 'ts-loader' }]
+                    exclude: /node_modules/,
+                    use: [
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                configFile: path.resolve('./tsconfig.json')
+                            },
+                        }
+                    ]
+                    */
                 },
                 {
                     test: /\.(png|jpg|gif)$/i,
@@ -29,9 +42,6 @@ module.exports = [
         output: {
             path: __dirname + '/dist/renderer',
             filename: 'renderer.bundle.js'
-        },
-        cache: {
-            type: 'filesystem'
         },
         plugins: [
             new HtmlWebpackPlugin({
