@@ -1,4 +1,4 @@
-import { setChartPoints, setChartPath, getChartCoordinates } from './renderer.js';
+import { setChartPoints, setChartPath, getChartCoordinates, changeUpdateDelay, isDoneUpdating, rendererStop } from './renderer.js';
 import { UISetPlaying, UISetStop } from './ui.js';
 // --------------------------------------------------------------------------------------------------
 
@@ -65,6 +65,7 @@ let chartPoints = [];
 let chartPath = [];
 let numberRandom = 8;
 let placingPoints = false;
+let runAlgo = false;
 
 let rpSlider = $("#randomPoints").slider({});
 rpSlider.on("slide", function (sliderValue) {
@@ -78,12 +79,20 @@ $('#repeatButton').click(function () {
 
 $('#generateButton').click(function () {
     UISetStop();
-    runAlgo = false;
+    rendererStop();
     window.tspAPI.tspStop();
+    runAlgo = false;
 
     chartPoints = generatePoints(numberRandom);
     setChartPoints(chartPoints);
     setChartPath([], chartPoints);
+});
+
+$('#speedRange').change(function () {
+    let val = $('#speedRange').val();
+    let newDelay = (100 - val) * 10;
+    console.log(newDelay);
+    changeUpdateDelay(newDelay);
 });
 
 $('#placePointsButton').click(function () {
@@ -104,6 +113,7 @@ $('#placePointsButton').click(function () {
 $('#clearPointsButton').click(function () {
     chartPoints = [];
     setChartPoints(chartPoints);
+    runAlgo = false;
 });
 
 $('#view-canvas').mousedown(function (evt) {
@@ -117,23 +127,21 @@ $('#view-canvas').mousedown(function (evt) {
     //setChartPath(generatePath(chartPoints.length), chartPoints);
 });
 
-var runAlgo = false;
 $('#runButton').click(function () {
-    if (!runAlgo) {
+    if (isDoneUpdating()) {
         UISetPlaying();
-        runAlgo = true;
         var algorithm = $('#algorithmSelect').val();
 
         // temporary mask of brute force delay
         if (algorithm === "Brute Force")
             setChartPath(generatePath(chartPoints.length), chartPoints);
 
-
+        runAlgo = true;
         window.tspAPI.tspStart({ points: chartPoints, algorithm: algorithm });
     }
     else {
         UISetStop();
-        runAlgo = false;
+        rendererStop();
         window.tspAPI.tspStop();
     };
 });
@@ -143,7 +151,7 @@ window.tspAPI.addEventListener('tspSetPath', message => {
 })
 
 window.tspAPI.addEventListener('tspDone', message => {
-    UISetStop();
+    //UISetStop();
     runAlgo = false;
 })
 
@@ -153,6 +161,10 @@ window.tspAPI.addEventListener('tspAlgorithms', message => {
     //UISetStop();
     //runAlgo = false;
 })
+
+export function algoIsDone() {
+    return !runAlgo;
+}
 
 function updateAlgorithms(algorithms) {
     var selectBox = $('#algorithmSelect');

@@ -39,7 +39,7 @@ async def process_problem(data, IPC):
     for i in solution.iterations:
         path = i
         await IPC.send_path(path)
-        await asyncio.sleep(0.5)
+        # await asyncio.sleep(0.5)
 
     await IPC.send_path(path, final=True)
 

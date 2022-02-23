@@ -1,4 +1,6 @@
 import { Queue } from './queue.js';
+import { UISetPlaying, UISetStop } from './ui.js';
+import { algoIsDone } from './logic.js';
 
 var viewport = document.getElementById('viewport');
 var canvas = document.getElementById('view-canvas');
@@ -7,6 +9,11 @@ var rect;
 
 var myChart;
 var pathQueue = new Queue();
+var chartPoints;
+
+var updateTask;
+var updateDelay = 500;
+var running = false;
 /*
 function draw() {
     for (var i = 0; i < 25; ++i) {
@@ -59,6 +66,18 @@ draw();
 resize();
 */
 
+export function isDoneUpdating() {
+    return pathQueue.isEmpty();
+}
+
+export function rendererStop() {
+    clearInterval(updateTask);
+    while (!pathQueue.isEmpty())
+        pathQueue.dequeue();
+
+    updateTask = setInterval(updateChartPath, updateDelay);
+}
+
 export function getChartCoordinates(offsetX, offsetY) {
     let x = myChart.scales['x'].getValueForPixel(offsetX);
     let y = myChart.scales['y'].getValueForPixel(offsetY);
@@ -68,6 +87,7 @@ export function getChartCoordinates(offsetX, offsetY) {
 // reposition the points
 export function setChartPoints(points) {
     var data = [];
+    chartPoints = points;
     points.forEach(point => {
         data.push({ x: point[0], y: point[1] })
     });
@@ -78,23 +98,43 @@ export function setChartPoints(points) {
 }
 
 // Set up the lines to connect up the right points
-export function setChartPath(path, chartPoints) {
+export function setChartPath(path, points) {
+    pathQueue.enqueue(path);
+
+    //updateChartPath();
+}
+
+export function changeUpdateDelay(newDelay) {
+    clearInterval(updateTask);
+    updateDelay = newDelay;
+    updateTask = setInterval(updateChartPath, newDelay);
+}
+
+function updateChartPath() {
     //if (path.length !== 0)
     //    data.push({ x: chartPoints[path[0]][0], y: chartPoints[path[0]][1] }); // complete the loop
 
-    pathQueue.enqueue(path);
-    if (pathQueue.isEmpty())
+    if (pathQueue.isEmpty()) {
+        if (running && algoIsDone()) {
+            UISetStop();
+            running = false;
+        }
         return;
+    }
 
+    running = true;
     var data = [];
-
     pathQueue.dequeue().forEach(index => {
         data.push({ x: chartPoints[index][0], y: chartPoints[index][1] })
     });
 
     myChart.data.datasets[1].data = data;
-
     myChart.update();
+
+    if (pathQueue.isEmpty() && algoIsDone()) {
+        UISetStop();
+        running = false;
+    }
 }
 
 // set up chart
@@ -149,6 +189,8 @@ function rendererMain() {
         canvas,
         config
     );
+
+    updateTask = setInterval(updateChartPath, updateDelay);
 }
 /*
 module.exports = {
