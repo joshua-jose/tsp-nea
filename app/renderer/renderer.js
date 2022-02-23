@@ -6,7 +6,7 @@ var ctx = canvas.getContext('2d');
 var rect;
 
 var myChart;
-
+var pathQueue = new Queue();
 /*
 function draw() {
     for (var i = 0; i < 25; ++i) {
@@ -79,13 +79,18 @@ export function setChartPoints(points) {
 
 // Set up the lines to connect up the right points
 export function setChartPath(path, chartPoints) {
-    var data = [];
-
-    path.forEach(index => {
-        data.push({ x: chartPoints[index][0], y: chartPoints[index][1] })
-    });
     //if (path.length !== 0)
     //    data.push({ x: chartPoints[path[0]][0], y: chartPoints[path[0]][1] }); // complete the loop
+
+    pathQueue.enqueue(path);
+    if (pathQueue.isEmpty())
+        return;
+
+    var data = [];
+
+    pathQueue.dequeue().forEach(index => {
+        data.push({ x: chartPoints[index][0], y: chartPoints[index][1] })
+    });
 
     myChart.data.datasets[1].data = data;
 

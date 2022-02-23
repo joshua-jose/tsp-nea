@@ -1,5 +1,9 @@
-var Queue = /** @class */ (function () {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Queue = void 0;
+var Queue = (function () {
     function Queue() {
+        this.elements = [];
     }
     Queue.prototype.enqueue = function (element) {
         this.elements.push(element);
@@ -15,3 +19,4 @@ var Queue = /** @class */ (function () {
     };
     return Queue;
 }());
+exports.Queue = Queue;

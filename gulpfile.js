@@ -39,13 +39,25 @@ function tsMain(cb) {
         .pipe(dest('dist/main/'));
 }
 
+function tsRenderer(cb) {
+    return src('app/renderer/*.ts', { since: lastRun(tsRenderer) })
+        .pipe(ts({
+            module: "commonjs",
+            removeComments: true,
+            isolatedModules: true,
+
+        }))
+        .pipe(dest('app/renderer/'));
+}
+
+
 function clean(cb) {
     return del(['dist'], cb);
 }
 
 //if (process.env.NODE_ENV === 'production') 
 
-exports.default = parallel(renderer, copyMain, tsMain)
+exports.default = parallel(series(tsRenderer, renderer), copyMain, tsMain)
 exports.clean = clean
 exports.main = parallel(copyMain, tsMain)
 
@@ -55,5 +67,6 @@ exports.watch = function () {
 
     watch('app/main/*.js', copyMain);
     watch('app/main/*.ts', tsMain);
+    watch("app/renderer/*.ts", tsRenderer)
 
 }

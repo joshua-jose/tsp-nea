@@ -1,6 +1,9 @@
-
-class Queue<T> {
+export class Queue<T> {
     elements: Array<T>;
+
+    constructor() {
+        this.elements = [];
+    }
 
     enqueue(element: T) {
         this.elements.push(element);
