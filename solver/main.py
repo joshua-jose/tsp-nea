@@ -28,7 +28,6 @@ async def process_problem(data, IPC):
     name = data["algorithm"]
 
     problem = Problem(np.array(points))
-    print(points, name)
 
     if name in algorithm_names.keys():
         algorithm = algorithm_names[name]

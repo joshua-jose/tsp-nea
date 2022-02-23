@@ -5,13 +5,13 @@ const zmq = require("zeromq");
 
 const IDENTITY = "FRONTEND"
 
-let solverProcess = null;
-let win = null;
+let solverProcess: typeof child_process.child_process = null;
+let win: Electron.BrowserWindow = null;
 let sock = null;
-let endpoint = null;
+let endpoint: String = null;
 let algorithms: Array<String> = [];
 
-var running = false;
+var running: boolean = false;
 
 /* Events:
 tspStart: tells the backend to start a TSP calculation
@@ -26,8 +26,8 @@ async function spawnProcess() {
 
     solverProcess = child_process.spawn('.venv/Scripts/python', ['-u', 'solver/main.py', '--daemon', endpoint]);
 
-    solverProcess.stderr.on('data', (msg) => console.log(msg.toString()));
-    solverProcess.stdout.on('data', (msg) => console.log(msg.toString()));
+    solverProcess.stderr.on('data', (msg: Object) => console.log(msg.toString()));
+    solverProcess.stdout.on('data', (msg: Object) => console.log(msg.toString()));
 
     // Initiate connection with a dummy packet
     await sendReady();
@@ -48,6 +48,14 @@ async function spawnProcess() {
 // ------------------------- ZMQ -------------------------
 // sending data to the python solver 
 
+// prototype for typing purposes
+class SolverPacket {
+    type: String
+    path: Int32Array
+    final: boolean
+    algorithms: Array<String>
+}
+
 async function solverListen() {
     while (true) {
         const packet = await recvPacket();
@@ -55,10 +63,10 @@ async function solverListen() {
     }
 }
 
-async function sendPacket(packet) {
+async function sendPacket(packet: Object) {
     await sock.send(JSON.stringify(packet)); // Send object as JSON
 }
-async function recvPacket() {
+async function recvPacket(): Promise<SolverPacket> {
     return JSON.parse((await sock.receive()).toString()); // Parse bytes as JSON in string
 }
 
@@ -69,7 +77,7 @@ async function sendReady() {
 async function sendStop() {
     await sendPacket({ 'type': 'stop' });
 }
-async function sendCalculate(points, algorithm) {
+async function sendCalculate(points: Array<Float32Array>, algorithm: String) {
     // check if process is alive
     if (solverProcess === undefined || solverProcess === null || solverProcess.killed)
         spawnProcess();
@@ -78,7 +86,7 @@ async function sendCalculate(points, algorithm) {
     await sendPacket(data);
 }
 
-function receivedPacket(packet) {
+function receivedPacket(packet: SolverPacket) {
     if (packet.type === "path") {
         if (!running)
             return;
@@ -99,7 +107,7 @@ function receivedPacket(packet) {
 // ------------------------- IPC -------------------------
 // Sends data to the browser
 
-function ipcSetPath(path) {
+function ipcSetPath(path: Int32Array) {
     ipcPostMessage('tspSetPath', { 'path': path });
 }
 
@@ -112,7 +120,7 @@ function ipcSendAlgorithms(ialgorithms: Array<String>) {
 }
 
 // Send a message to the renderer process
-function ipcPostMessage(messageName, data) {
+function ipcPostMessage(messageName: String, data) {
     var message = data;
     message.ipcReturn = messageName;
 
@@ -121,7 +129,7 @@ function ipcPostMessage(messageName, data) {
 
 // -------------------------------------------------------
 
-async function init(iwin) {
+export async function init(iwin: Electron.BrowserWindow) {
     win = iwin;
 
     // create a new socket with a given identity
@@ -158,8 +166,4 @@ async function init(iwin) {
     ipcMain.on('tspGetAlgorithms', (event, arg) => {
         event.returnValue = algorithms;
     })
-}
-
-module.exports = {
-    init: init
 }
