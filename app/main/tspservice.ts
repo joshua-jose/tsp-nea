@@ -55,6 +55,8 @@ class SolverPacket {
     final: boolean
     algorithms: Array<String>
 }
+class Point extends Float32Array { };
+class Path extends Int32Array { };
 
 async function solverListen() {
     while (true) {
@@ -77,7 +79,7 @@ async function sendReady() {
 async function sendStop() {
     await sendPacket({ 'type': 'stop' });
 }
-async function sendCalculate(points: Array<Float32Array>, algorithm: String) {
+async function sendCalculate(points: Array<Point>, algorithm: String) {
     // check if process is alive
     if (solverProcess === undefined || solverProcess === null || solverProcess.killed)
         spawnProcess();
@@ -107,7 +109,7 @@ function receivedPacket(packet: SolverPacket) {
 // ------------------------- IPC -------------------------
 // Sends data to the browser
 
-function ipcSetPath(path: Int32Array) {
+function ipcSetPath(path: Path) {
     ipcPostMessage('tspSetPath', { 'path': path });
 }
 
