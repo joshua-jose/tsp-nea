@@ -67,6 +67,8 @@ app.on('window-all-closed', function () {
 })
 
 function initWindowIPC() {
+    // register event handlers for all the window control events
+    // the browser sends these events when the window close/maximize/minimize buttons are pressed
     ipcMain.on('windowClose', (event, message) => win.close());
     ipcMain.on('windowMinimize', (event, message) => win.minimize());
     ipcMain.on('windowUnmaximize', (event, message) => win.unmaximize());

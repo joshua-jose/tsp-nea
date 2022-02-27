@@ -55,6 +55,14 @@ export function UISetStop() {
     spinner.css('display', 'none');
 }
 
+// time in ms
+export function UISetTime(time) {
+    var timeTakenText = $('#timeTakenText');
+    var seconds = Math.round(time) / 1000
+
+    timeTakenText.text(`${seconds}s`);
+}
+
 $(document).ready(function () {
     /*
     $('[data-toggle="tooltip"]').tooltip({

@@ -1,5 +1,5 @@
 import { setChartPoints, setChartPath, getChartCoordinates, changeUpdateDelay, isDoneUpdating, rendererStop } from './renderer.js';
-import { UISetPlaying, UISetStop } from './ui.js';
+import { UISetPlaying, UISetStop, UISetTime } from './ui.js';
 // --------------------------------------------------------------------------------------------------
 
 function rand(min, max) {
@@ -58,25 +58,33 @@ function shuffle(array) {
  * lock controls while spawning process
  */
 
+// place button icons for on state and off state
 let placeIconOffClass = 'bi-cursor';
 let placeIconOnClass = 'bi-cursor-fill';
 
-let chartPoints = [];
-let chartPath = [];
-let numberRandom = 8;
-let placingPoints = false;
-let runAlgo = false;
+let chartPoints = []; // array of points
+let numberRandom = 8; // number of random points
+let placingPoints = false; // are we placing points?
+let runAlgo = false; // is the solver running a calculation?
+let startTime = 0;
+let elapsedTime = 0;
 
+// set the number of random points based on the slider value.
+// update when the slider is moved
 let rpSlider = $("#randomPoints").slider({});
 rpSlider.on("slide", function (sliderValue) {
     //document.getElementById("ex6SliderVal").textContent = sliderValue;
     numberRandom = sliderValue.value;
 });
 
+// clear the path when reset button is pressed
 $('#repeatButton').click(function () {
-    window.tspAPI.tspRestart();
+    //window.tspAPI.tspRestart();
+    setChartPath([], chartPoints);
 });
 
+// When the generator button is pressed, stop all calculations. 
+// Generate a new set of points, and clear the path 
 $('#generateButton').click(function () {
     UISetStop();
     rendererStop();
@@ -88,8 +96,11 @@ $('#generateButton').click(function () {
     setChartPath([], chartPoints);
 });
 
+// when the speed slider is updated, calculate a new update delay, and set it
 $('#speedRange').change(function () {
     let val = $('#speedRange').val();
+    // (100-val) slider is 0-100, change to 100-0, so lowest delay (fastest speed) is on the right
+    // (*10)     remap range to 1000-0, so 1000ms is max delay 
     let newDelay = (100 - val) * 10;
     console.log(newDelay);
     changeUpdateDelay(newDelay);
@@ -138,6 +149,8 @@ $('#runButton').click(function () {
 
         runAlgo = true;
         window.tspAPI.tspStart({ points: chartPoints, algorithm: algorithm });
+        startTime = Date.now();
+        elapsedTime = 0;
     }
     else {
         UISetStop();
@@ -152,6 +165,8 @@ window.tspAPI.addEventListener('tspSetPath', message => {
 
 window.tspAPI.addEventListener('tspDone', message => {
     //UISetStop();
+    elapsedTime = Date.now() - startTime;
+    UISetTime(elapsedTime);
     runAlgo = false;
 })
 

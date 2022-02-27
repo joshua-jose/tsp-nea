@@ -1,5 +1,7 @@
 const { ipcRenderer, contextBridge } = require('electron');
 
+// Expose our API to the browser
+// This lets the browser send start and stop commands to the node.js process through IPC
 contextBridge.exposeInMainWorld('tspAPI', {
     tspStart: (message) => ipcRenderer.send('tspStart', message),
     tspStop: () => ipcRenderer.send('tspStop', {}),
@@ -16,6 +18,7 @@ contextBridge.exposeInMainWorld('tspAPI', {
     }
 })
 
+// expose window controls to the browser
 contextBridge.exposeInMainWorld('electron', {
     windowClose: () => ipcRenderer.send('windowClose'),
     windowMinimize: () => ipcRenderer.send('windowMinimize'),
