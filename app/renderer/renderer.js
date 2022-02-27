@@ -1,4 +1,4 @@
-import { Queue } from './queue.js';
+import { Queue } from './queue.ts';
 import { UISetPlaying, UISetStop } from './ui.js';
 import { algoIsDone } from './logic.js';
 

@@ -15,7 +15,7 @@ module.exports = [
         module: {
             rules: [
                 {
-                    /*
+
                     test: /\.ts(x?)$/,
                     include: path.join(__dirname, 'app/renderer/'),
                     exclude: /node_modules/,
@@ -27,7 +27,7 @@ module.exports = [
                             },
                         }
                     ]
-                    */
+
                 },
                 {
                     test: /\.(png|jpg|gif)$/i,

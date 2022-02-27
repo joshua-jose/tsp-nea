@@ -6,7 +6,7 @@ const zmq = require("zeromq");
 const IDENTITY = "FRONTEND"
 
 let solverProcess: typeof child_process.child_process = null;
-let win: Electron.BrowserWindow = null;
+let win = null;
 let sock = null;
 let endpoint: String = null;
 let algorithms: Array<String> = [];
@@ -131,7 +131,7 @@ function ipcPostMessage(messageName: String, data) {
 
 // -------------------------------------------------------
 
-export async function init(iwin: Electron.BrowserWindow) {
+export async function init(iwin) {
     win = iwin;
 
     // create a new socket with a given identity
